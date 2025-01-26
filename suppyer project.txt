@@ -1,0 +1,35 @@
+suppyer
+b2c b2b
+admin-> product, price all price, category, operator like payment order deliver
+user -> profile->basic detail google location, gst, btc bt2 caLANDER,
+
+b2b -> direct order,date,time,calander
+payment gatwaye razorpay
+invoice weekly invoice
+payment wekkly, monthly, dayli,
+
+b2c - advance payment
+
+charts 
+
+admin ->
+	category,
+	product create,
+	all product price wise manage -> like b2b customer price, b2c customer price,
+	order,
+	daily calendar for order,
+	payments,
+	operators,
+	users,
+	
+operator ->
+	show order -> manage status like order for deliver etc
+	payment status update like payment done, return etc
+	show calendar list for orders
+
+user -> 
+	show products according his type price
+	make weekly calendar -> send to admin,
+	make order for single product -> payment getaway is razorpay,
+	generate daily base monthlybase yearly base invoice automatic in email or dashboard
+	after make order to send notification to admin
