@@ -16,9 +16,27 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'admin',
+            'fname' => 'super',
+            'lname' => 'admin',
+            'name' => 'superadmin',
             'email' => 'admin@gmail.com',
             'password' => 'Indian@123',
+            'user_type' => 'admin',
+            'is_locked' => false,
+            'gender' => 'male',
+            'is_activate' => true,
+        ]);
+
+        User::factory()->create([
+            'fname' => 'prit',
+            'lname' => 'patel',
+            'name' => 'prit patel',
+            'email' => 'prit89039@gmail.com',
+            'password' => 'Prit@1908',
+            'user_type' => 'business',
+            'is_locked' => false,
+            'gender' => 'male',
+            'is_activate' => false,
         ]);
     }
 }

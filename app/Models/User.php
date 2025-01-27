@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Notifications\Notification;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,6 +15,32 @@ class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+
+    protected $table = 'users';
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if ($this->is_activate == false) {
+            Notification::make()
+                ->title("Login Failed")
+                ->body("User is not active")
+                ->danger()
+                ->send();
+            return false;
+        }
+
+        if ($this->is_locked == true) {
+            Notification::make()
+                ->title("Login Failed")
+                ->body("User is locked")
+                ->danger()
+                ->send();
+
+            return false;
+        }
+
+        return true; //str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
+    }
 
     /**
      * The attributes that are mass assignable.
@@ -23,6 +51,16 @@ class User extends Authenticatable implements FilamentUser
         'name',
         'email',
         'password',
+        'fname',
+        'mname',
+        'lname',
+        'number',
+        'user_type',
+        'is_locked',
+        'profile_pic',
+        'dob',
+        'gender',
+        'is_activate',
     ];
 
     /**
@@ -45,6 +83,9 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_locked' => 'bool',
+            'dob' => 'datetime',
+            'is_activate' => 'bool',
         ];
     }
 }
