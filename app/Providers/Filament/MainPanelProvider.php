@@ -2,22 +2,24 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Pages\Auth\Login;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Filament\PanelProvider;
+use App\Filament\Pages\Auth\Login;
+use Filament\Support\Colors\Color;
+use App\Http\Middleware\EnsureUserType;
+use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+use Afsakar\FilamentOtpLogin\FilamentOtpLoginPlugin;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 class MainPanelProvider extends PanelProvider
 {
@@ -28,6 +30,7 @@ class MainPanelProvider extends PanelProvider
             ->id('main')
             ->path('main')
             ->login(Login::class)
+            ->brandName('Market Mesh')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -54,6 +57,10 @@ class MainPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureUserType::class,
+            ])
+            ->plugins([
+                FilamentOtpLoginPlugin::make(),
             ]);
     }
 }

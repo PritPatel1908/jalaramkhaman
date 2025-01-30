@@ -4,19 +4,25 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Notifications\Notification;
 use Filament\Panel;
+use Filament\Notifications\Notification;
+use Illuminate\Notifications\Notifiable;
+use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Afsakar\FilamentOtpLogin\Models\Contracts\CanLoginDirectly;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable implements FilamentUser, CanLoginDirectly
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     protected $table = 'users';
+
+    public function canLoginDirectly(): bool
+    {
+        return $this->user_type === 'admin' || $this->user_type === 'business';
+    }
 
     public function canAccessPanel(Panel $panel): bool
     {
