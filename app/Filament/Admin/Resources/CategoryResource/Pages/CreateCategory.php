@@ -4,16 +4,14 @@ namespace App\Filament\Admin\Resources\CategoryResource\Pages;
 
 use App\Filament\Admin\Resources\CategoryResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\CreateRecord;
 
-class ManageCategories extends ManageRecords
+class CreateCategory extends CreateRecord
 {
     protected static string $resource = CategoryResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getRedirectUrl(): string
     {
-        return [
-            Actions\CreateAction::make(),
-        ];
+        return $this->getResource()::getUrl('index');
     }
 }
