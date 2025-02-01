@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
@@ -10,9 +10,9 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Admin\Resources\ProductResource\Pages;
-use App\Filament\Admin\Resources\ProductResource\RelationManagers;
+use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
 {
@@ -46,23 +46,25 @@ class ProductResource extends Resource
                     ]),
                 Section::make('Product Price')
                     ->schema([
-                        // make repeter for price and type
                         Forms\Components\Repeater::make('prices')
                             ->label('Product Prices')
                             ->relationship('prices')
                             ->schema([
                                 Forms\Components\TextInput::make('price')
                                     ->label('Price')
-                                    ->required(),
-                                Forms\Components\Select::make('type')
-                                    ->label('Type')
                                     ->required()
-                                    ->options([
-                                        'business' => 'Business',
-                                        'customer' => 'Customer',
-                                    ]),
+                                    ->default(function () {
+                                        dd($state);
+                                        // Get the authenticated user's type
+                                        $userType = auth()->user()->user_type;
+
+                                        // Fetch the matching price from the relationship
+                                        return auth()->user()->prices()->where('type', $userType)->value('price');
+                                    })
+                                    ->disabled(), // Prevents editing if needed
                             ])
-                            ->columns(2),
+                            ->columns(2)
+                        // ->hidden(fn() => auth()->user()->prices()->where('type', auth()->user()->user_type)->doesntExist()),
                     ]),
                 Section::make('Product Stock')
                     ->columns(1)
@@ -92,12 +94,13 @@ class ProductResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('category.name')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('stock')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\ImageColumn::make('product_image_path'),
+                Tables\Columns\TextColumn::make('category.name')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
@@ -115,7 +118,7 @@ class ProductResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -136,7 +139,7 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            // 'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
 }
