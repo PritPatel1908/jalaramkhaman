@@ -61,6 +61,7 @@ class MainPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentOtpLoginPlugin::make(),
-            ]);
+            ])
+            ->authGuard('web');
     }
 }

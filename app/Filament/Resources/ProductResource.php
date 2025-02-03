@@ -44,28 +44,30 @@ class ProductResource extends Resource
                             ->required()
                             ->relationship('category', 'name'),
                     ]),
-                Section::make('Product Price')
+                Section::make()
                     ->schema([
-                        Forms\Components\Repeater::make('prices')
-                            ->label('Product Prices')
-                            ->relationship('prices')
+                        Forms\Components\Repeater::make('Business Type Product Price')
+                            ->label('Product Price')
+                            ->relationship('business_type_product_price')
+                            ->hidden(fn() => auth()->user()->user_type == 'customer')
                             ->schema([
                                 Forms\Components\TextInput::make('price')
                                     ->label('Price')
-                                    ->required()
-                                    ->default(function () {
-                                        dd($state);
-                                        // Get the authenticated user's type
-                                        $userType = auth()->user()->user_type;
-
-                                        // Fetch the matching price from the relationship
-                                        return auth()->user()->prices()->where('type', $userType)->value('price');
-                                    })
-                                    ->disabled(), // Prevents editing if needed
+                                    ->required(),
                             ])
-                            ->columns(2)
-                        // ->hidden(fn() => auth()->user()->prices()->where('type', auth()->user()->user_type)->doesntExist()),
-                    ]),
+                            ->maxItems(1),
+                        Forms\Components\Repeater::make('Customer Type Product Price')
+                            ->label('Product Price')
+                            ->relationship('customer_type_product_price')
+                            ->hidden(fn() => auth()->user()->user_type == 'business')
+                            ->schema([
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Price')
+                                    ->required(),
+                            ])
+                            ->maxItems(1),
+                    ])
+                    ->columns(1),
                 Section::make('Product Stock')
                     ->columns(1)
                     ->schema([
@@ -76,10 +78,12 @@ class ProductResource extends Resource
                 Section::make('Product Image')
                     ->columns(1)
                     ->schema([
-                        Forms\Components\FileUpload::make('product_image')
+                        Forms\Components\FileUpload::make('product_image_path')
                             ->label('Product Image')
-                            // ->required()
-                            ->image(),
+                            ->columnSpanFull()
+                            // ->avatar()
+                            ->imageEditor()
+                            ->default(null),
                     ]),
             ]);
     }

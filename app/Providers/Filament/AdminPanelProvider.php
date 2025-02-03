@@ -58,6 +58,6 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
                 EnsureUserType::class,
             ])
-            ->authGuard('web');
+            ->authGuard('admin');
     }
 }

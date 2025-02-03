@@ -44,16 +44,26 @@ class ProductResource extends Resource
                             ->required()
                             ->relationship('category', 'name'),
                     ]),
-                Section::make('Product Price')
+                Section::make()
                     ->schema([
-                        Forms\Components\TextInput::make('business_type_product_price')
-                            ->label('Business Type Product Price')
-                            ->required(),
-                        Forms\Components\TextInput::make('customer_type_product_price')
-                            ->label('Customer Type Product Price')
-                            ->required(),
+                        Forms\Components\Repeater::make('Business Type Product Price')
+                            ->relationship('business_type_product_price')
+                            ->schema([
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Price')
+                                    ->required(),
+                            ])
+                            ->maxItems(1),
+                        Forms\Components\Repeater::make('Customer Type Product Price')
+                            ->relationship('customer_type_product_price')
+                            ->schema([
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Price')
+                                    ->required(),
+                            ])
+                            ->maxItems(1),
                     ])
-                    ->columns(1),
+                    ->columns(2),
                 Section::make('Product Stock')
                     ->columns(1)
                     ->schema([

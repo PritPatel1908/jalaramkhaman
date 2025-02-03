@@ -39,11 +39,11 @@ class Product extends Model
 
     public function business_type_product_price()
     {
-        return $this->belongsToMany(BusinessTypeProductPrice::class);
+        return $this->hasMany(BusinessTypeProductPrice::class);
     }
 
     public function customer_type_product_price()
     {
-        return $this->belongsToMany(CustomerTypeProductPrice::class);
+        return $this->hasMany(CustomerTypeProductPrice::class);
     }
 }

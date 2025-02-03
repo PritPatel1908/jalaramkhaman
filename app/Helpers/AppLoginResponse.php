@@ -15,8 +15,9 @@ class AppLoginResponse extends LoginResponse
     {
         if (auth()->user()->user_type == 'admin') {
             return redirect('admin');
+        } else {
+            return redirect('main');
         }
-        return redirect('main');
         // return redirect(session()->get('last_active_url'));
     }
 }

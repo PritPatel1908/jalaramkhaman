@@ -36,7 +36,19 @@ class DatabaseSeeder extends Seeder
             'user_type' => 'business',
             'is_locked' => false,
             'gender' => 'male',
-            'is_activate' => false,
+            'is_activate' => true,
+        ]);
+
+        User::factory()->create([
+            'fname' => 'prit',
+            'lname' => 'patel',
+            'name' => 'prit patel',
+            'email' => 'prit1908@gmail.com',
+            'password' => 'Prit@1908',
+            'user_type' => 'customer',
+            'is_locked' => false,
+            'gender' => 'male',
+            'is_activate' => true,
         ]);
     }
 }
