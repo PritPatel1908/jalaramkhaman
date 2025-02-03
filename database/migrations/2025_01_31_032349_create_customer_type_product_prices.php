@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_prices', function (Blueprint $table) {
+        Schema::create('customer_type_product_prices', function (Blueprint $table) {
             $table->id();
             $table->decimal('price', 8, 2)->nullable();
-            $table->string('type')->nullable();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('product_prices');
+        Schema::dropIfExists('customer_type_product_prices');
     }
 };

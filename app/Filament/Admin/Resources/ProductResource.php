@@ -46,24 +46,14 @@ class ProductResource extends Resource
                     ]),
                 Section::make('Product Price')
                     ->schema([
-                        // make repeter for price and type
-                        Forms\Components\Repeater::make('prices')
-                            ->label('Product Prices')
-                            ->relationship('prices')
-                            ->schema([
-                                Forms\Components\TextInput::make('price')
-                                    ->label('Price')
-                                    ->required(),
-                                Forms\Components\Select::make('type')
-                                    ->label('Type')
-                                    ->required()
-                                    ->options([
-                                        'business' => 'Business',
-                                        'customer' => 'Customer',
-                                    ]),
-                            ])
-                            ->columns(2),
-                    ]),
+                        Forms\Components\TextInput::make('business_type_product_price')
+                            ->label('Business Type Product Price')
+                            ->required(),
+                        Forms\Components\TextInput::make('customer_type_product_price')
+                            ->label('Customer Type Product Price')
+                            ->required(),
+                    ])
+                    ->columns(1),
                 Section::make('Product Stock')
                     ->columns(1)
                     ->schema([

@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProductPrice extends Model
+class BusinessTypeProductPrice extends Model
 {
-    protected $table = 'product_prices';
+    protected $table = 'business_type_product_prices';
 
     /**
      * The "booted" method of the model.
@@ -19,7 +19,6 @@ class ProductPrice extends Model
 
     protected $fillable = [
         'price',
-        'type',
         'product_id'
     ];
 
