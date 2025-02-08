@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\RecurringOrderResource\Pages;
 
-use App\Filament\Resources\RecurringOrderResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use App\Filament\Resources\RecurringOrderResource;
+use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailsRelationManager;
 
 class EditRecurringOrder extends EditRecord
 {
@@ -14,6 +15,13 @@ class EditRecurringOrder extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RecurringOrderDetailsRelationManager::class,
         ];
     }
 }

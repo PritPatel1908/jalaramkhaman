@@ -2,19 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\OrderPeriod;
-use App\Enums\PaymentCycle;
-use App\Filament\Resources\RecurringOrderResource\Pages;
-use App\Filament\Resources\RecurringOrderResource\RelationManagers;
-use App\Models\RecurringOrder;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Enums\OrderPeriod;
 use Filament\Tables\Table;
+use App\Enums\PaymentCycle;
+use App\Models\RecurringOrder;
+use Filament\Resources\Resource;
+use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\RecurringOrderResource\Pages;
+use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 
 class RecurringOrderResource extends Resource
 {
@@ -29,13 +29,13 @@ class RecurringOrderResource extends Resource
                 Section::make()
                     ->schema([
                         Forms\Components\Select::make('order_period')
-                            ->default(OrderPeriod::Daily)
+                            // ->default(OrderPeriod::Daily)
                             ->options(OrderPeriod::class)
                             ->native(false)
                             ->preload()
                             ->required(),
                         Forms\Components\Select::make('payment_cycle')
-                            ->default(PaymentCycle::Daily)
+                            // ->default(PaymentCycle::Daily)
                             ->options(PaymentCycle::class)
                             ->native(false)
                             ->preload()

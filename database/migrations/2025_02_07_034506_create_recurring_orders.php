@@ -16,7 +16,7 @@ return new class extends Migration
             $table->enum('order_period', ['daily', 'weekly', 'monthly'])->nullable();
             $table->dateTime('last_created_date')->nullable();
             $table->enum('payment_cycle', ['daily', 'weekly', 'monthly'])->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
