@@ -32,4 +32,9 @@ class RecurringOrderDetail extends Model
     {
         return $this->belongsTo(RecurringOrder::class);
     }
+
+    public function products()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

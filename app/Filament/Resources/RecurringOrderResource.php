@@ -15,12 +15,20 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RecurringOrderResource\Pages;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers;
+use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
 
 class RecurringOrderResource extends Resource
 {
     protected static ?string $model = RecurringOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function getRelations(): array
+    {
+        return [
+            RecurringOrderDetailRelationManager::class,
+        ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -40,10 +48,6 @@ class RecurringOrderResource extends Resource
                             ->native(false)
                             ->preload()
                             ->required(),
-                        Forms\Components\TextInput::make('status')
-                            ->required()
-                            ->numeric()
-                            ->default(1),
                     ])
                     ->columns(2)
             ]);
@@ -73,13 +77,6 @@ class RecurringOrderResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
