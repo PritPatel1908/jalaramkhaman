@@ -19,8 +19,8 @@ class RecurringOrder extends Model
      */
 
     protected $casts = [
-        'order_period' => OrderPeriod::class,
-        'payment_cycle' => PaymentCycle::class,
+        'order_period' => 'int',
+        'payment_cycle' => 'int',
         'last_created_date' => 'datetime',
         'user_id' => 'int',
     ];

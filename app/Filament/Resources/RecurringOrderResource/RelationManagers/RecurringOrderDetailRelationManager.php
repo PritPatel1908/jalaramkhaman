@@ -10,9 +10,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class RecurringOrderDetailsRelationManager extends RelationManager
+class RecurringOrderDetailRelationManager extends RelationManager
 {
-    protected static string $relationship = 'recurring_order_details';
+    protected static string $relationship = 'RecurringOrderDetail';
 
     public function form(Form $form): Form
     {

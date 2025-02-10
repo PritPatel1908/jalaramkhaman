@@ -53,25 +53,14 @@ class RecurringOrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('order_period'),
+                Tables\Columns\TextColumn::make('order_period')
+                    ->formatStateUsing(fn($record) => OrderPeriod::from($record->order_period)->getLabel()),
+                Tables\Columns\TextColumn::make('payment_cycle')
+                    ->formatStateUsing(fn($record) => PaymentCycle::from($record->payment_cycle)->getLabel()),
                 Tables\Columns\TextColumn::make('last_created_date')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('payment_cycle'),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('status')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('status'),
             ])
             ->filters([
                 //

@@ -12,7 +12,7 @@ class CreateRecurringOrder extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $this->record->user_id = Auth()->id();
+        $this->record->user_id = auth()->user()->id;
         $this->record->save();
     }
 }
