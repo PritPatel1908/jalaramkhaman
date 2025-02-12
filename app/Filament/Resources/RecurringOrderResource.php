@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RecurringOrderResource\Pages;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
+use Filament\Forms\Components\Repeater;
 
 class RecurringOrderResource extends Resource
 {
@@ -23,33 +24,46 @@ class RecurringOrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function getRelations(): array
-    {
-        return [
-            RecurringOrderDetailRelationManager::class,
-        ];
-    }
-
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Section::make()
                     ->schema([
-                        Forms\Components\Select::make('order_period')
-                            // ->default(OrderPeriod::Daily)
-                            ->options(OrderPeriod::class)
-                            ->native(false)
-                            ->preload()
-                            ->required(),
-                        Forms\Components\Select::make('payment_cycle')
-                            // ->default(PaymentCycle::Daily)
-                            ->options(PaymentCycle::class)
-                            ->native(false)
-                            ->preload()
-                            ->required(),
+                        Section::make('Recurring Order Detail')
+                            ->schema([
+                                Forms\Components\Select::make('order_period')
+                                    // ->default(OrderPeriod::Daily)
+                                    ->options(OrderPeriod::class)
+                                    ->native(false)
+                                    ->preload()
+                                    ->required(),
+                                Forms\Components\Select::make('payment_cycle')
+                                    // ->default(PaymentCycle::Daily)
+                                    ->options(PaymentCycle::class)
+                                    ->native(false)
+                                    ->preload()
+                                    ->required(),
+                            ])
+                            ->columns(2),
+                        Section::make()
+                            ->schema([
+                                Repeater::make('recurring_order_details')
+                                    ->relationship('recurring_order_details')
+                                    ->label('Products Details')
+                                    ->schema([
+                                        Forms\Components\Select::make('product_id')
+                                            ->relationship('products', 'name')
+                                            ->native(false)
+                                            ->preload()
+                                            ->required(),
+                                        Forms\Components\TextInput::make('qty')
+                                            ->label('Quantity in KG/LTR')
+                                            ->required()
+                                    ])
+                                    ->columns(2)
+                            ]),
                     ])
-                    ->columns(2)
             ]);
     }
 
