@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('recurring_orders', function (Blueprint $table) {
+        Schema::create('recurring_order_schedules', function (Blueprint $table) {
             $table->id();
             $table->tinyInteger('order_period')->nullable();
-            $table->dateTime('last_created_date')->nullable();
-            $table->dateTime('next_created_date')->nullable();
+            $table->dateTime('created_date')->nullable();
             $table->tinyInteger('payment_cycle')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->tinyInteger('status')->default(4);

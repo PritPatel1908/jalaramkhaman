@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
+use App\Enums\Status;
 use Filament\Forms\Form;
 use App\Enums\OrderPeriod;
 use Filament\Tables\Table;
@@ -11,12 +12,13 @@ use App\Enums\PaymentCycle;
 use App\Models\RecurringOrder;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Repeater;
+use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RecurringOrderResource\Pages;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
-use Filament\Forms\Components\Repeater;
 
 class RecurringOrderResource extends Resource
 {
@@ -78,13 +80,33 @@ class RecurringOrderResource extends Resource
                 Tables\Columns\TextColumn::make('last_created_date')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\ImageColumn::make('status'),
+                Tables\Columns\TextColumn::make('next_created_date')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->formatStateUsing(fn($record) => Status::from($record->status)->getLabel()),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('status')
+                        // ->icon('heroicon-o-key')
+                        ->form([
+                            Forms\Components\Select::make('status')
+                                ->label('Order Status')
+                                ->options(Status::class)
+                                ->native(false)
+                                ->preload()
+                                ->required(),
+                        ])
+                        ->action(function (array $data, RecurringOrder $recurring_order): void {
+                            $recurring_order->status = $data['status'];
+                            $recurring_order->save();
+                        }),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

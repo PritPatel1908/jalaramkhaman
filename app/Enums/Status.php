@@ -7,10 +7,10 @@ use Filament\Support\Contracts\HasLabel;
 
 enum Status: int implements HasLabel, HasIcon
 {
-    case Active = 1;
-    case Inactive = 2;
-    case Blocked = 3;
-    case Deleted = 4;
+    case Start = 1;
+    case End = 2;
+    case Deleted = 3;
+    case Waiting = 4;
 
     public function getLabel(): ?string
     {
@@ -20,9 +20,8 @@ enum Status: int implements HasLabel, HasIcon
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::Active => 'heroicon-m-check',
-            self::Inactive => 'heroicon-m-x-mark',
-            self::Blocked => 'heroicon-m-x-mark',
+            self::Start => 'heroicon-m-check',
+            self::End => 'heroicon-m-x-mark',
             self::Deleted => 'heroicon-o-archive-box-x-mark',
         };
     }

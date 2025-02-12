@@ -62,7 +62,7 @@ class CategoryResource extends Resource
                 Tables\Columns\TextColumn::make('description')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
-                    ->numeric()
+                    ->formatStateUsing(fn($record) => Status::from($record->status)->getLabel())
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class RecurringOrderDetail extends Model
 {
-    protected $table = 'recurring_order_details';
+    protected $table = 'recurring_order_detail_schedules';
 
     /**
      * The "booted" method of the model.

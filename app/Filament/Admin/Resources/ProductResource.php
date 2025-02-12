@@ -74,7 +74,7 @@ class ProductResource extends Resource
                 Section::make('Product Image')
                     ->columns(1)
                     ->schema([
-                        Forms\Components\FileUpload::make('product_image')
+                        Forms\Components\FileUpload::make('product_image_path')
                             ->label('Product Image')
                             // ->required()
                             ->image(),
@@ -86,18 +86,18 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('product_image_path')
+                    ->rounded(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('description')
-                    ->searchable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('category.name')
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: false),
                 Tables\Columns\TextColumn::make('stock')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\ImageColumn::make('product_image_path'),
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->dateTime()
                     ->sortable()
