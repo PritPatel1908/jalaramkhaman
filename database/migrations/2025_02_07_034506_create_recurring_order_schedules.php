@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recurring_orders');
+        Schema::dropIfExists('recurring_order_schedules');
     }
 };

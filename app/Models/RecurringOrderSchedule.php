@@ -10,7 +10,7 @@ use App\Enums\OrderPeriod;
 use App\Enums\PaymentCycle;
 use Illuminate\Database\Eloquent\Model;
 
-class RecurringOrder extends Model
+class RecurringOrderSchedule extends Model
 {
     protected $table = 'recurring_order_schedules';
 
@@ -38,8 +38,8 @@ class RecurringOrder extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function recurring_order_details()
+    public function recurring_order_detail_schedules()
     {
-        return $this->hasMany(RecurringOrderDetail::class);
+        return $this->hasMany(RecurringOrderDetailSchedule::class);
     }
 }

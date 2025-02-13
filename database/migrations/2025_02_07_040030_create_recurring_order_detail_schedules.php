@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('recurring_order_detail_schedules', function (Blueprint $table) {
             $table->id();
             $table->decimal('qty', 8, 2)->nullable();
+            $table->tinyInteger('qty_in')->nullable();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('recurring_order_id')->constrained()->onDelete('cascade');
+            $table->foreignId('order_schedule_id')->constrained('recurring_order_schedules')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('recurring_order_details');
+        Schema::dropIfExists('recurring_order_detail_schedules');
     }
 };

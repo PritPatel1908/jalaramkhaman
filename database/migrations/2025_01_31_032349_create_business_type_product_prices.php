@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('business_type_product_prices', function (Blueprint $table) {
             $table->id();
             $table->decimal('price', 8, 2)->nullable();
+            $table->decimal('qty', 8, 2)->nullable();
+            $table->tinyInteger('qty_in')->nullable();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -8,7 +8,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RecurringOrderDetail extends Model
+class RecurringOrderDetailSchedule extends Model
 {
     protected $table = 'recurring_order_detail_schedules';
 
@@ -18,19 +18,21 @@ class RecurringOrderDetail extends Model
 
     protected $casts = [
         'qty' => 'float',
+        'qty_in' => 'int',
         'product_id' => 'int',
-        'recurring_order_id' => 'int',
+        'order_schedule_id' => 'int',
     ];
 
     protected $fillable = [
         'qty',
+        'qty_in',
         'product_id',
-        'recurring_order_id',
+        'order_schedule_id',
     ];
 
-    public function recurring_order()
+    public function recurring_order_schedule()
     {
-        return $this->belongsTo(RecurringOrder::class);
+        return $this->belongsTo(RecurringOrderSchedule::class);
     }
 
     public function products()

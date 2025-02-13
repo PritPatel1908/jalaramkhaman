@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('recurring_order_details', function (Blueprint $table) {
             $table->id();
             $table->decimal('qty', 8, 2)->nullable();
+            $table->tinyInteger('qty_in')->nullable();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
             $table->foreignId('recurring_order_id')->constrained()->onDelete('cascade');
             $table->timestamps();

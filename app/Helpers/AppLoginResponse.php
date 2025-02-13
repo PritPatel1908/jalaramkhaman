@@ -13,7 +13,7 @@ class AppLoginResponse extends LoginResponse
 {
     public function toResponse($request): RedirectResponse | Redirector
     {
-        if (auth()->user()->user_type == 'admin') {
+        if (Filament::auth()->user()->user_type == 'admin') {
             return redirect('admin');
         } else {
             return redirect('main');

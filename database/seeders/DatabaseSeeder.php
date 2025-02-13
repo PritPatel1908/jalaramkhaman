@@ -50,5 +50,9 @@ class DatabaseSeeder extends Seeder
             'gender' => 'male',
             'is_activate' => true,
         ]);
+
+        $this->call([
+            DefaultSeeder::class
+        ]);
     }
 }

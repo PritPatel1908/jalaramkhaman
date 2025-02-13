@@ -2,6 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\QtyIn;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
@@ -52,7 +53,17 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('price')
                                     ->label('Price')
                                     ->required(),
+                                Forms\Components\TextInput::make('qty')
+                                    ->label('Qty')
+                                    ->required(),
+                                Forms\Components\Select::make('qty_in')
+                                    // ->default(OrderPeriod::Daily)
+                                    ->options(QtyIn::class)
+                                    ->native(false)
+                                    ->preload()
+                                    ->required(),
                             ])
+                            ->columns(3)
                             ->maxItems(1),
                         Forms\Components\Repeater::make('Customer Type Product Price')
                             ->relationship('customer_type_product_price')
@@ -60,17 +71,27 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('price')
                                     ->label('Price')
                                     ->required(),
+                                Forms\Components\TextInput::make('qty')
+                                    ->label('Qty')
+                                    ->required(),
+                                Forms\Components\Select::make('qty_in')
+                                    // ->default(OrderPeriod::Daily)
+                                    ->options(QtyIn::class)
+                                    ->native(false)
+                                    ->preload()
+                                    ->required(),
                             ])
+                            ->columns(3)
                             ->maxItems(1),
                     ])
                     ->columns(2),
-                Section::make('Product Stock')
-                    ->columns(1)
-                    ->schema([
-                        Forms\Components\TextInput::make('stock')
-                            ->label('Stock In KG/LTR')
-                        // ->required(),
-                    ]),
+                // Section::make('Product Stock')
+                //     ->columns(1)
+                //     ->schema([
+                //         Forms\Components\TextInput::make('stock')
+                //             ->label('Stock In KG/LTR')
+                //         // ->required(),
+                //     ]),
                 Section::make('Product Image')
                     ->columns(1)
                     ->schema([
