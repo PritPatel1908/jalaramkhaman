@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Enums\QtyIn;
 use Filament\Tables;
 use App\Enums\Status;
 use Filament\Forms\Form;
@@ -60,10 +61,16 @@ class RecurringOrderResource extends Resource
                                             ->preload()
                                             ->required(),
                                         Forms\Components\TextInput::make('qty')
-                                            ->label('Quantity in KG/LTR')
-                                            ->required()
+                                            ->label('Quantity')
+                                            ->required(),
+                                        Forms\Components\Select::make('qty_in')
+                                            // ->default(OrderPeriod::Daily)
+                                            ->options(QtyIn::class)
+                                            ->native(false)
+                                            ->preload()
+                                            ->required(),
                                     ])
-                                    ->columns(2)
+                                    ->columns(3)
                             ]),
                     ])
             ]);

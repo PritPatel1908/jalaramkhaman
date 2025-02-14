@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login(Login::class)
+            ->brandName('Jalaram Khaman Admin')
             // ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Amber,

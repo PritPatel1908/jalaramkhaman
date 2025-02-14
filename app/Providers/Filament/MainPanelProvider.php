@@ -30,7 +30,7 @@ class MainPanelProvider extends PanelProvider
             ->id('main')
             ->path('main')
             ->login(Login::class)
-            ->brandName('Market Mesh')
+            ->brandName('Jalaram Khaman')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -60,7 +60,7 @@ class MainPanelProvider extends PanelProvider
                 EnsureUserType::class,
             ])
             ->plugins([
-                FilamentOtpLoginPlugin::make(),
+                // FilamentOtpLoginPlugin::make(),
             ])
             ->authGuard('web');
     }

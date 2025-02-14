@@ -14,9 +14,9 @@ class AppLoginResponse extends LoginResponse
     public function toResponse($request): RedirectResponse | Redirector
     {
         if (Filament::auth()->user()->user_type == 'admin') {
-            return redirect('admin');
+            return redirect(route('admin'));
         } else {
-            return redirect('main');
+            return redirect(route('main'));
         }
         // return redirect(session()->get('last_active_url'));
     }
