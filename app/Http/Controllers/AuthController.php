@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Filament\Facades\Filament;
 use Illuminate\Http\Request;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Auth;
+use Filament\Models\Contracts\FilamentUser;
 
 class AuthController extends Controller
 {
@@ -16,10 +17,10 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        // $credentials = $request->validate([
-        //     'email' => ['required', 'email'],
-        //     'password' => ['required'],
-        // ]);
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
         $user = User::where('email', $request->email)->first();
 
@@ -42,18 +43,12 @@ class AuthController extends Controller
         }
 
         $userGet = Filament::auth()->user();
-        if (
-            ($userGet instanceof FilamentUser) &&
-            (!$userGet->canAccessPanel(Filament::getCurrentPanel()))
-        ) {
-            Filament::auth()->logout();
-            $this->throwFailureValidationException();
-        }
 
-        // if (Auth::attempt($credentials)) {
-        //     $request->session()->regenerate();
-        //     return redirect()->intended('dashboard');
-        // }
+        if ($userGet->user_type === 'admin') {
+            return redirect()->route(Filament::getPanel('admin')->getUrl());
+        } else {
+            return redirect()->route('main');
+        }
     }
 
     public function logout(Request $request)

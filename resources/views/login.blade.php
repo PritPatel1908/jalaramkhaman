@@ -123,18 +123,19 @@
         <p><strong>Sign in</strong></p>
 
         @if ($errors->any())
-        <div class="alert alert-danger">
-            @foreach ($errors->all() as $error)
-                {{ $error }}
-            @endforeach
-        </div>
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    {{ $error }}
+                @endforeach
+            </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login_process') }}">
             @csrf
             <div class="input-group">
                 <label for="email">Email*</label>
-                <input type="email" id="email" id="email" value="{{ old('email') }}" placeholder="User Email" required autofocus>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="User Email"
+                    required autofocus>
             </div>
 
             <div class="input-group password-wrapper">
