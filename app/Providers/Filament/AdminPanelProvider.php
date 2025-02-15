@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin')
             ->path('admin')
-            ->login(Login::class)
+            // ->login(Login::class)
             ->brandName('Jalaram Khaman Admin')
             // ->profile(isSimple: false)
             ->colors([

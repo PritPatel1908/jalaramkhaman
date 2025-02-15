@@ -11,6 +11,8 @@ enum Status: int implements HasLabel, HasIcon
     case End = 2;
     case Deleted = 3;
     case Waiting = 4;
+    case Waiting_For_Dispatch = 5;
+    case Delivered = 6;
 
     public function getLabel(): ?string
     {

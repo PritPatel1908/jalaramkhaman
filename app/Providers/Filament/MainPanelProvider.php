@@ -29,7 +29,7 @@ class MainPanelProvider extends PanelProvider
             ->default()
             ->id('main')
             ->path('main')
-            ->login(Login::class)
+            // ->login(Login::class)
             ->brandName('Jalaram Khaman')
             ->colors([
                 'primary' => Color::Amber,

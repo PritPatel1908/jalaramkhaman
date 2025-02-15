@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RecurringOrderResource\Pages;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
+use App\Jobs\GenerateOrder;
 
 class RecurringOrderResource extends Resource
 {
@@ -112,6 +113,9 @@ class RecurringOrderResource extends Resource
                         ->action(function (array $data, RecurringOrder $recurring_order): void {
                             $recurring_order->status = $data['status'];
                             $recurring_order->save();
+                            if (Status::from($data['status'])->name === 'Start') {
+                                GenerateOrder::dispatch($recurring_order);
+                            }
                         }),
                 ])
             ])
