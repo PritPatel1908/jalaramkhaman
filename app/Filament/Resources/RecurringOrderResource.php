@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use App\Enums\OrderPeriod;
 use Filament\Tables\Table;
 use App\Enums\PaymentCycle;
+use App\Jobs\GenerateOrder;
 use App\Models\RecurringOrder;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Section;
@@ -20,7 +21,6 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RecurringOrderResource\Pages;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
-use App\Jobs\GenerateOrder;
 
 class RecurringOrderResource extends Resource
 {
@@ -106,8 +106,13 @@ class RecurringOrderResource extends Resource
                             Forms\Components\Select::make('status')
                                 ->label('Order Status')
                                 ->options(function (RecurringOrder $recurring_order) {
-                                    dd($recurring_order->status);
-                                    // if($recurring_order->status === )
+                                    if ($recurring_order->status === 1) {
+                                        return [Status::End->value => Status::End->name];
+                                    } else if ($recurring_order->status === 2) {
+                                        return [Status::Start->value => Status::Start->name];
+                                    } else if ($recurring_order->status === 4) {
+                                        return [Status::Start->value => Status::Start->name];
+                                    }
                                 })
                                 ->native(false)
                                 ->preload()
