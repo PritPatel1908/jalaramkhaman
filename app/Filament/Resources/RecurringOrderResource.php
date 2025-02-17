@@ -105,7 +105,10 @@ class RecurringOrderResource extends Resource
                         ->form([
                             Forms\Components\Select::make('status')
                                 ->label('Order Status')
-                                ->options(Status::class)
+                                ->options(function (RecurringOrder $recurring_order) {
+                                    dd($recurring_order->status);
+                                    // if($recurring_order->status === )
+                                })
                                 ->native(false)
                                 ->preload()
                                 ->required(),

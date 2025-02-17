@@ -32,7 +32,7 @@ class RecurringOrderDetailSchedule extends Model
 
     public function recurring_order_schedule()
     {
-        return $this->belongsTo(RecurringOrderSchedule::class);
+        return $this->belongsTo(RecurringOrderSchedule::class, 'order_schedule_id');
     }
 
     public function products()

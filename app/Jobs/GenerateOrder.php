@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Helpers\RecurringOrderScheduleGenerator;
 use App\Models\RecurringOrder;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -36,7 +37,8 @@ class GenerateOrder implements ShouldQueue, ShouldBeUnique
     public function handle(): void
     {
         if (get_class($this->record) === RecurringOrder::class) {
-            dump($this->record);
+            $recurring_order_schedule = new RecurringOrderScheduleGenerator($this->record);
+            $recurring_order_schedule->generateRecurringOrderSchedule();
         }
     }
 }
