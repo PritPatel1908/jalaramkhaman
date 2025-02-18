@@ -5,11 +5,11 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum PaymentCycle: int implements HasLabel
+enum PaymentStatus: int implements HasLabel
 {
-    case Daily = 1;
-    case Weekly = 2;
-    case Monthly = 3;
+    case Completed = 1;
+    case Pending = 2;
+    case Return = 3;
 
     public function getLabel(): ?string
     {

@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum Status: int implements HasLabel, HasIcon
+enum Status: int implements HasLabel
 {
     case Start = 1;
     case End = 2;
@@ -17,14 +17,5 @@ enum Status: int implements HasLabel, HasIcon
     public function getLabel(): ?string
     {
         return $this->name;
-    }
-
-    public function getIcon(): ?string
-    {
-        return match ($this) {
-            self::Start => 'heroicon-m-check',
-            self::End => 'heroicon-m-x-mark',
-            self::Deleted => 'heroicon-o-archive-box-x-mark',
-        };
     }
 }

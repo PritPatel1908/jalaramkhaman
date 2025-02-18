@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('oderabel_type')->nullable();
             $table->integer('oderabel_id')->nullable();
-            $table->decimal('price', 8, 2)->nullable();
-            $table->tinyInteger('status')->nullable();
+            $table->decimal('total_amount', 8, 2)->nullable();
+            $table->tinyInteger('payment_status')->nullable();
             $table->dateTime('payment_date')->nullable();
             $table->tinyInteger('payment_type')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');

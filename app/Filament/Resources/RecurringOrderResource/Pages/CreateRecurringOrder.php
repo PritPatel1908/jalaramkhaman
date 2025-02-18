@@ -15,4 +15,9 @@ class CreateRecurringOrder extends CreateRecord
         $this->record->user_id = auth()->user()->id;
         $this->record->save();
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }

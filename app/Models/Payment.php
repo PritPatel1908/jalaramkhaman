@@ -20,8 +20,8 @@ class Payment extends Model
 
     protected $casts = [
         'oderabel_id' => 'int',
-        'price' => 'float',
-        'status' => 'int',
+        'total_amount' => 'float',
+        'payment_status' => 'int',
         'payment_date' => 'datetime',
         'payment_type' => 'int',
         'user_id' => 'int',
@@ -30,8 +30,8 @@ class Payment extends Model
     protected $fillable = [
         'oderabel_type',
         'oderabel_id',
-        'price',
-        'status',
+        'total_amount',
+        'payment_status',
         'payment_date',
         'payment_type',
         'user_id',
