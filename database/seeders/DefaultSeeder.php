@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\QtyIn;
+use App\Enums\UnitIn;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -32,15 +32,15 @@ class DefaultSeeder extends Seeder
         $product1->business_type_product_price()->create([
             'price' => '239',
             'product_id' => $product1->id,
-            'qty' => '200',
-            'qty_in' => QtyIn::GRAM
+            'per' => '200',
+            'unit_in' => UnitIn::GRAM
         ]);
 
         $product1->customer_type_product_price()->create([
             'price' => '249',
             'product_id' => $product1->id,
-            'qty' => '200',
-            'qty_in' => QtyIn::GRAM
+            'per' => '200',
+            'unit_in' => UnitIn::GRAM
         ]);
 
         $product2 = Product::create([
@@ -55,15 +55,15 @@ class DefaultSeeder extends Seeder
         $product2->business_type_product_price()->create([
             'price' => '149',
             'product_id' => $product2->id,
-            'qty' => '200',
-            'qty_in' => QtyIn::GRAM
+            'per' => '200',
+            'unit_in' => UnitIn::GRAM
         ]);
 
         $product2->customer_type_product_price()->create([
             'price' => '159',
             'product_id' => $product2->id,
-            'qty' => '200',
-            'qty_in' => QtyIn::GRAM
+            'per' => '200',
+            'unit_in' => UnitIn::GRAM
         ]);
     }
 }

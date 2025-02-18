@@ -15,15 +15,15 @@ class CustomerTypeProductPrice extends Model
     protected $casts = [
         'product_id' => 'int',
         'price' => 'float',
-        'qty' => 'float',
-        'qty_in' => 'int',
+        'per' => 'int',
+        'unit_in' => 'int',
     ];
 
     protected $fillable = [
         'price',
         'product_id',
-        'qty',
-        'qty_in'
+        'per',
+        'unit_in'
     ];
 
     public function product()

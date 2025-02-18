@@ -18,14 +18,14 @@ class RecurringOrderDetail extends Model
 
     protected $casts = [
         'qty' => 'float',
-        'qty_in' => 'int',
+        'unit_in' => 'int',
         'product_id' => 'int',
         'recurring_order_id' => 'int',
     ];
 
     protected $fillable = [
         'qty',
-        'qty_in',
+        'unit_in',
         'product_id',
         'recurring_order_id',
     ];

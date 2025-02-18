@@ -5,7 +5,7 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum QtyIn: int implements HasLabel //, HasIcon
+enum UnitIn: int implements HasLabel //, HasIcon
 {
     case GRAM = 1;
     case KG = 2;

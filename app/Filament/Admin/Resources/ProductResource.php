@@ -2,7 +2,7 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Enums\QtyIn;
+use App\Enums\UnitIn;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Product;
@@ -53,12 +53,12 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('price')
                                     ->label('Price')
                                     ->required(),
-                                Forms\Components\TextInput::make('qty')
-                                    ->label('Qty')
+                                Forms\Components\TextInput::make('per')
+                                    ->label('Per')
                                     ->required(),
-                                Forms\Components\Select::make('qty_in')
+                                Forms\Components\Select::make('unit_in')
                                     // ->default(OrderPeriod::Daily)
-                                    ->options(QtyIn::class)
+                                    ->options(UnitIn::class)
                                     ->native(false)
                                     ->preload()
                                     ->required(),
@@ -71,12 +71,12 @@ class ProductResource extends Resource
                                 Forms\Components\TextInput::make('price')
                                     ->label('Price')
                                     ->required(),
-                                Forms\Components\TextInput::make('qty')
-                                    ->label('Qty')
+                                Forms\Components\TextInput::make('per')
+                                    ->label('Per')
                                     ->required(),
-                                Forms\Components\Select::make('qty_in')
+                                Forms\Components\Select::make('unit_in')
                                     // ->default(OrderPeriod::Daily)
-                                    ->options(QtyIn::class)
+                                    ->options(UnitIn::class)
                                     ->native(false)
                                     ->preload()
                                     ->required(),

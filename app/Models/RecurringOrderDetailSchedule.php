@@ -18,14 +18,14 @@ class RecurringOrderDetailSchedule extends Model
 
     protected $casts = [
         'qty' => 'float',
-        'qty_in' => 'int',
+        'unit_in' => 'int',
         'product_id' => 'int',
         'order_schedule_id' => 'int',
     ];
 
     protected $fillable = [
         'qty',
-        'qty_in',
+        'unit_in',
         'product_id',
         'order_schedule_id',
     ];

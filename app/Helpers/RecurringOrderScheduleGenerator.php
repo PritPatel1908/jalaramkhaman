@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Carbon\Carbon;
 use App\Enums\Status;
+use App\Enums\UnitIn;
 use App\Models\Payment;
 use App\Models\RecurringOrder;
 use App\Models\RecurringOrderSchedule;
@@ -32,7 +33,7 @@ class RecurringOrderScheduleGenerator
         foreach ($this->recurringOrder->recurring_order_details as $recurring_order_detail) {
             RecurringOrderDetailSchedule::create([
                 'qty' => $recurring_order_detail->qty,
-                'qty_in' => $recurring_order_detail->qty_in,
+                'unit_in' => $recurring_order_detail->unit_in,
                 'product_id' => $recurring_order_detail->product_id,
                 'order_schedule_id' => $recurring_order_schedule->id,
             ]);
@@ -48,19 +49,19 @@ class RecurringOrderScheduleGenerator
         }
         $this->recurringOrder->save();
 
-        dd($recurring_order_schedule);
-        foreach ($recurring_order_schedule->recurring_order_detail_schedules as $schedule) {
+        $recurring_order_detail_schedules = RecurringOrderDetailSchedule::where('order_schedule_id', $recurring_order_schedule->id)->get();
+        foreach ($recurring_order_detail_schedules as $schedule) {
             if ($this->recurringOrder->user->user_type === 'business') {
                 $product_type = $schedule->products->business_type_product_price->first();
 
                 $base_price = $product_type->price;
-                $base_unit = $product_type->price_in;
+                $per_unit_qty = $product_type->per;
+                $base_unit = UnitIn::from($product_type->unit_in)->getLabel();
 
                 $purchase_qty = $schedule->qty;
-                $purchase_unit = $schedule->qty_in;
-                dd($base_unit, $purchase_unit);
+                $purchase_unit = UnitIn::from($schedule->unit_in)->getLabel();
 
-                $converted_price = $this->convertPrice($base_price, $base_unit, $purchase_unit);
+                $converted_price = $this->convertPrice($base_price, $per_unit_qty, $base_unit, $purchase_unit);
 
                 if ($converted_price !== null) {
                     $this->total += $converted_price * $purchase_qty;
@@ -72,21 +73,20 @@ class RecurringOrderScheduleGenerator
         Payment::create([]);
     }
 
-    public function convertPrice($price, $unit, $toUnit)
+    public function convertPrice($price, $perUnitQty, $perUnit, $toUnit)
     {
         $conversionRates = [
-            'g' => ['kg' => 0.001],
-            'kg' => ['g' => 1000],
-            'ml' => ['ltr' => 0.001],
-            'ltr' => ['ml' => 1000],
+            'GRAM' => ['KG' => 0.001, 'GRAM' => 1],
+            'KG' => ['GRAM' => 1000, 'KG' => 1],
+            'ML' => ['LTR' => 0.001, 'ML' => 1],
+            'LTR' => ['ML' => 1000, 'LTR' => 1],
         ];
 
-        if ($unit === $toUnit) {
-            return $price; // No conversion needed
-        }
-
-        if (isset($conversionRates[$unit][$toUnit])) {
-            return $price * $conversionRates[$unit][$toUnit];
+        // Convert per unit to the base unit price
+        if (isset($conversionRates[$perUnit][$toUnit])) {
+            $unitConversionFactor = $conversionRates[$perUnit][$toUnit];
+            $pricePerGram = $price / $perUnitQty; // Price per 1 gram
+            return $pricePerGram * (1 / $unitConversionFactor);
         }
 
         return null; // Conversion not found

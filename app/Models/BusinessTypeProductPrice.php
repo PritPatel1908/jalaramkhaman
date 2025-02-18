@@ -15,15 +15,15 @@ class BusinessTypeProductPrice extends Model
     protected $casts = [
         'product_id' => 'int',
         'price' => 'float',
-        'qty' => 'float',
-        'price_in' => 'int',
+        'per' => 'int',
+        'unit_in' => 'int',
     ];
 
     protected $fillable = [
         'price',
         'product_id',
-        'qty',
-        'price_in'
+        'per',
+        'unit_in'
     ];
 
     public function product()
