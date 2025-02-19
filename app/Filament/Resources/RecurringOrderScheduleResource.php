@@ -2,23 +2,25 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\OrderPeriod;
-use App\Enums\PaymentCycle;
+use Filament\Tables;
 use App\Enums\Status;
-use App\Filament\Resources\RecurringOrderScheduleResource\Pages;
-use App\Models\RecurringOrderSchedule;
-use Filament\Infolists\Components\Grid;
-use Filament\Infolists\Components\ImageEntry;
-use Filament\Infolists\Components\RepeatableEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Infolists\Components\Split;
-use Filament\Infolists\Components\TextEntry;
+use App\Enums\UnitIn;
+use App\Enums\OrderPeriod;
+use Filament\Tables\Table;
+use App\Enums\PaymentCycle;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use App\Models\RecurringOrderSchedule;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Split;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\RecurringOrderScheduleResource\Pages;
 
 class RecurringOrderScheduleResource extends Resource
 {
@@ -46,7 +48,7 @@ class RecurringOrderScheduleResource extends Resource
                                 ->schema([
                                     ImageEntry::make('products.product_image_path')
                                         ->label('')
-                                        ->size(100)
+                                        ->size(120)
                                         ->circular()
                                 ])
                                 ->columns(1),
@@ -54,7 +56,21 @@ class RecurringOrderScheduleResource extends Resource
                                 ->schema([
                                     TextEntry::make('products.name')
                                         ->label(''),
-                                    TextEntry::make('qty'),
+                                    TextEntry::make('qty')
+                                        ->label('')
+                                        ->formatStateUsing(function ($record) {
+                                            return $record->qty . ' ' . UnitIn::from($record->unit_in)->getLabel();
+                                        }),
+                                    TextEntry::make('products')
+                                        ->label('')
+                                        ->formatStateUsing(function ($record) {
+                                            $auth_type = Auth::user()->user_type;
+                                            if ($auth_type === 'business') {
+                                                return $record->products->business_type_product_price->first()->price;
+                                            } elseif ($auth_type === 'customer') {
+                                                return $record->products->customer_type_product_price->first()->price;
+                                            }
+                                        })
                                 ])
                                 ->columns(1),
                         ])->from('md')
