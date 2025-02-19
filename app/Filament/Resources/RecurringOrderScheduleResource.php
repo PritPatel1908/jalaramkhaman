@@ -6,10 +6,14 @@ use App\Enums\OrderPeriod;
 use App\Enums\PaymentCycle;
 use App\Enums\Status;
 use App\Filament\Resources\RecurringOrderScheduleResource\Pages;
-use App\Filament\Resources\RecurringOrderScheduleResource\RelationManagers;
 use App\Models\RecurringOrderSchedule;
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Split;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -30,6 +34,36 @@ class RecurringOrderScheduleResource extends Resource
     //         ]);
     // }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                RepeatableEntry::make('recurring_order_detail_schedules')
+                    // ->relationship('leave_balance_details')
+                    ->schema([
+                        Split::make([
+                            Section::make()
+                                ->schema([
+                                    ImageEntry::make('products.product_image_path')
+                                        ->label('')
+                                        ->size(100)
+                                        ->circular()
+                                ])
+                                ->columns(1),
+                            Section::make()
+                                ->schema([
+                                    TextEntry::make('products.name')
+                                        ->label(''),
+                                    TextEntry::make('qty'),
+                                ])
+                                ->columns(1),
+                        ])->from('md')
+                    ])
+                    ->grid(2)
+            ])
+            ->columns(1);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -48,7 +82,7 @@ class RecurringOrderScheduleResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 // Tables\Actions\BulkActionGroup::make([

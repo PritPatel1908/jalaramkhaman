@@ -50,8 +50,8 @@ class RecurringOrderScheduleGenerator
         }
         $this->recurringOrder->save();
 
-        $recurring_order_detail_schedules = RecurringOrderDetailSchedule::where('order_schedule_id', $recurring_order_schedule->id)->get();
-        foreach ($recurring_order_detail_schedules as $schedule) {
+        // $recurring_order_detail_schedules = RecurringOrderDetailSchedule::where('order_schedule_id', $recurring_order_schedule->id)->get();
+        foreach ($recurring_order_schedule->recurring_order_detail_schedules as $schedule) {
             if ($this->recurringOrder->user->user_type === 'business') {
                 $product_type = $schedule->products->business_type_product_price->first();
 

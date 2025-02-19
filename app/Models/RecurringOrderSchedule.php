@@ -40,6 +40,6 @@ class RecurringOrderSchedule extends Model
 
     public function recurring_order_detail_schedules()
     {
-        return $this->hasMany(RecurringOrderDetailSchedule::class);
+        return $this->hasMany(RecurringOrderDetailSchedule::class, 'order_schedule_id');
     }
 }
