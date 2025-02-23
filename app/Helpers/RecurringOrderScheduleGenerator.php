@@ -77,6 +77,7 @@ class RecurringOrderScheduleGenerator
             'oderabel_id' => $recurring_order_schedule->id,
             'total_amount' => $this->total,
             'payment_status' => PaymentStatus::Pending,
+            'payment_date' => Carbon::today()->format('Y-m-d'),
             'user_id' => $this->recurringOrder->user_id
         ]);
     }
