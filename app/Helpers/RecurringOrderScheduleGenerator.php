@@ -7,9 +7,11 @@ use App\Enums\Status;
 use App\Enums\UnitIn;
 use App\Models\Payment;
 use App\Enums\PaymentStatus;
+use App\Mail\RecuringOrderNotifyEmail;
 use App\Models\RecurringOrder;
 use App\Models\RecurringOrderSchedule;
 use App\Models\RecurringOrderDetailSchedule;
+use Illuminate\Support\Facades\Mail;
 
 class RecurringOrderScheduleGenerator
 {
@@ -80,6 +82,8 @@ class RecurringOrderScheduleGenerator
             'payment_date' => Carbon::today()->format('Y-m-d'),
             'user_id' => $this->recurringOrder->user_id
         ]);
+
+        Mail::to($this->recurringOrder->user->email)->send(new RecuringOrderNotifyEmail($recurring_order_schedule, $this->recurringOrder->user));
     }
 
     public function convertPrice($price, $perUnitQty, $perUnit, $toUnit)

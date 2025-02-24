@@ -2,28 +2,28 @@
 
 namespace App\Console\Commands;
 
-use Carbon\Carbon;
-use App\Models\User;
 use App\Jobs\GenerateOrder;
 use App\Models\RecurringOrder;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class DailyScheduleCheck extends Command
+class RecuringOrderNotifyEmail extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:daily-schedule-check';
+    protected $signature = 'app:notify-email';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Check Daily, Weekly, Monthly Recurring Order Schedule And Create';
+    protected $description = 'Check Daily, Weekly, Monthly Recurring Order Schedule And After Create Send Email';
 
     /**
      * Execute the console command.
