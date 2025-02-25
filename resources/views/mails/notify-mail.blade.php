@@ -100,12 +100,12 @@
             Order Confirmation
         </div>
         <div class="email-body">
-            <p>Dear {{user.name}},</p>
+            <p>Dear {{ $user->name }},</p>
             <p>Thank you for your order. Below are your order details:</p>
 
             <h3>Order Information</h3>
             <p><strong>Order ID:</strong> #123456</p>
-            <p><strong>Order Date:</strong> February 25, 2025</p>
+            <p><strong>Order Date:</strong> {{ $recurring_order_schedule->created_date->format('d-M-Y') }}</p>
 
             <h3>Order Details</h3>
             <table class="order-table">
@@ -114,19 +114,56 @@
                     <th>Quantity</th>
                     <th>Price</th>
                 </tr>
-                <tr>
-                    <td>Product A</td>
-                    <td>2</td>
-                    <td>$20.00</td>
-                </tr>
-                <tr>
-                    <td>Product B</td>
-                    <td>1</td>
-                    <td>$15.00</td>
-                </tr>
+                @foreach ($recurring_order_schedule->recurring_order_detail_schedules as $detail)
+                    <tr>
+                        <td>{{ $detail->products->name }}</td>
+                        <td>
+                            {{ $detail->qty }}
+                            @if ($detail->unit_in == '1')
+                                GRAM
+                            @elseif($detail->unit_in == '2')
+                                KG
+                            @elseif($detail->unit_in == '3')
+                                ML
+                            @elseif($detail->unit_in == '4')
+                                LTR
+                            @endif
+                        </td>
+                        <td>₹@if ($user->user_type == 'business')
+                                {{ $detail->products->business_type_product_price->first()->price }}
+                                per {{ $detail->products->business_type_product_price->first()->per }}
+                                @if ($detail->products->business_type_product_price->first()->unit_in == '1')
+                                    GRAM
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '2')
+                                    KG
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '3')
+                                    ML
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '4')
+                                    LTR
+                                @endif
+                            @elseif($user->user_type == 'customer')
+                                {{ $detail->products->customer_type_product_price->first()->price }}
+                                per {{ $detail->products->business_type_product_price->first()->per }}
+                                @if ($detail->products->business_type_product_price->first()->unit_in == '1')
+                                    GRAM
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '2')
+                                    KG
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '3')
+                                    ML
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '4')
+                                    LTR
+                                @endif
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
                 <tr>
                     <td colspan="2"><strong>Total</strong></td>
-                    <td><strong>$35.00</strong></td>
+                    <td>
+                        <strong>
+                            ₹{{ \App\Models\Payment::where('oderabel_type', $recurring_order_schedule::class)->where('oderabel_id', $recurring_order_schedule->id)->first()->total_amount }}
+                        </strong>
+                    </td>
                 </tr>
             </table>
 

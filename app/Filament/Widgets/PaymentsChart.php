@@ -4,17 +4,17 @@ namespace App\Filament\Widgets;
 
 use Carbon\Carbon;
 use App\Models\Guest;
+use App\Models\Payment;
 use App\Models\Employee;
 use App\Enums\OrderStatus;
-use App\Enums\PaymentStatus;
 use App\Models\OrderDetail;
+use App\Enums\PaymentStatus;
 use App\Helpers\GeneralHelper;
-use App\Models\Payment;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Illuminate\Support\Facades\Auth;
 
 class PaymentsChart extends ChartWidget
 {
@@ -52,7 +52,7 @@ class PaymentsChart extends ChartWidget
             if ($user_type == 'business') {
                 $pending_payment = $filteredData->where('user_id', Auth::user()->id)->where('payment_status', PaymentStatus::Pending)->sum('total_amount');
                 $success_payment = $filteredData->where('user_id', Auth::user()->id)->where('payment_status', PaymentStatus::Completed)->sum('total_amount');
-            } else {
+            } elseif ($user_type == 'customer') {
                 $pending_payment = $filteredData->where('payment_status', PaymentStatus::Pending)->sum('total_amount');
                 $success_payment = $filteredData->where('payment_status', PaymentStatus::Completed)->sum('total_amount');
             }
