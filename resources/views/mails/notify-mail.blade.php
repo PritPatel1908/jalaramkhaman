@@ -38,6 +38,24 @@
             color: #333333;
         }
 
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-table th,
+        .order-table td {
+            border: 1px solid #dddddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .order-table th {
+            background-color: #007bff;
+            color: white;
+        }
+
         .email-footer {
             text-align: center;
             padding: 20px;
@@ -66,6 +84,11 @@
                 width: 100%;
                 padding: 10px;
             }
+
+            .order-table th,
+            .order-table td {
+                padding: 8px;
+            }
         }
     </style>
 </head>
@@ -74,15 +97,42 @@
 
     <div class="email-container">
         <div class="email-header">
-            Notification Alert
+            Order Confirmation
         </div>
         <div class="email-body">
-            <p>Dear User,</p>
-            <p>You have a new notification. Please review the details below:</p>
-            <p><strong>Subject:</strong> Your Important Update</p>
-            <p><strong>Message:</strong> This is a sample notification message for you.</p>
-            <p>Click the button below to view more details:</p>
-            <p><a href="#" class="btn">View Notification</a></p>
+            <p>Dear {{user.name}},</p>
+            <p>Thank you for your order. Below are your order details:</p>
+
+            <h3>Order Information</h3>
+            <p><strong>Order ID:</strong> #123456</p>
+            <p><strong>Order Date:</strong> February 25, 2025</p>
+
+            <h3>Order Details</h3>
+            <table class="order-table">
+                <tr>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                </tr>
+                <tr>
+                    <td>Product A</td>
+                    <td>2</td>
+                    <td>$20.00</td>
+                </tr>
+                <tr>
+                    <td>Product B</td>
+                    <td>1</td>
+                    <td>$15.00</td>
+                </tr>
+                <tr>
+                    <td colspan="2"><strong>Total</strong></td>
+                    <td><strong>$35.00</strong></td>
+                </tr>
+            </table>
+
+            <p>Click the button below to view your order:</p>
+            <p><a href="#" class="btn">View Order</a></p>
+
             <p>Thank you,<br> The Team</p>
         </div>
         <div class="email-footer">

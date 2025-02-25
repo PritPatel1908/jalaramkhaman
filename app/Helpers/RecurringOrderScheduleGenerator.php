@@ -7,7 +7,7 @@ use App\Enums\Status;
 use App\Enums\UnitIn;
 use App\Models\Payment;
 use App\Enums\PaymentStatus;
-use App\Mail\RecuringOrderNotifyEmail;
+use App\Mail\RecurringOrderNotifyEmail;
 use App\Models\RecurringOrder;
 use App\Models\RecurringOrderSchedule;
 use App\Models\RecurringOrderDetailSchedule;
@@ -83,7 +83,7 @@ class RecurringOrderScheduleGenerator
             'user_id' => $this->recurringOrder->user_id
         ]);
 
-        Mail::to($this->recurringOrder->user->email)->send(new RecuringOrderNotifyEmail($recurring_order_schedule, $this->recurringOrder->user));
+        Mail::to($this->recurringOrder->user->email)->send(new RecurringOrderNotifyEmail($recurring_order_schedule, $this->recurringOrder->user));
     }
 
     public function convertPrice($price, $perUnitQty, $perUnit, $toUnit)

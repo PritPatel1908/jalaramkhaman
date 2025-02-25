@@ -11,7 +11,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class RecuringOrderNotifyEmail extends Mailable
+class RecurringOrderNotifyEmail extends Mailable
 {
     use Queueable, SerializesModels;
     public RecurringOrderSchedule $recurringOrderSchedule;
@@ -42,7 +42,8 @@ class RecuringOrderNotifyEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.mail.RecuringOrderNotifyEmail',
+            view: 'view.mails.notify-mail',
+            with: ['recurring_order_schedule' => $this->recurringOrderSchedule, 'user' => $this->user]
         );
     }
 
