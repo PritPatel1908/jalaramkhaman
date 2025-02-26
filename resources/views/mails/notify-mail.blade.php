@@ -173,7 +173,7 @@
             <p>Thank you,<br> The Team</p>
         </div>
         <div class="email-footer">
-            © 2025 Your Company. All rights reserved.
+            © {{Carbon::today->format('Y')}} Your Company. All rights reserved.
         </div>
     </div>
 
