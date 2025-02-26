@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PaymentResource\Pages;
-use App\Filament\Resources\PaymentResource\RelationManagers;
-use App\Models\Payment;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Payment;
+use App\Enums\PaymentType;
 use Filament\Tables\Table;
+use App\Enums\PaymentStatus;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\PaymentResource\Pages;
+use Filament\Infolists\Components\RepeatableEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\PaymentResource\RelationManagers;
 
 class PaymentResource extends Resource
 {
@@ -21,24 +23,48 @@ class PaymentResource extends Resource
 
     protected static ?int $navigationSort = 40;
 
-    public static function form(Form $form): Form
+    public static function infolist(Infolist $infolist): Infolist
     {
-        return $form
+        return $infolist
             ->schema([
-                Forms\Components\TextInput::make('oderabel_type')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('oderabel_id')
-                    ->numeric(),
-                Forms\Components\TextInput::make('total_amount')
-                    ->numeric(),
-                Forms\Components\TextInput::make('payment_status')
-                    ->numeric(),
-                Forms\Components\DateTimePicker::make('payment_date'),
-                Forms\Components\TextInput::make('payment_type')
-                    ->numeric(),
-                Forms\Components\TextInput::make('user_id')
-                    ->numeric(),
-            ]);
+                RepeatableEntry::make('')
+                    // ->relationship('leave_balance_details')
+                    ->schema([
+                        Split::make([
+                            Section::make()
+                                ->schema([
+                                    ImageEntry::make('products.product_image_path')
+                                        ->label('')
+                                        ->size(120)
+                                        ->circular()
+                                ])
+                                ->columns(1),
+                            Section::make()
+                                ->schema([
+                                    TextEntry::make('products.name')
+                                        ->label(''),
+                                    TextEntry::make('qty')
+                                        ->label('')
+                                        ->formatStateUsing(function ($record) {
+                                            return $record->qty . ' ' . UnitIn::from($record->unit_in)->getLabel();
+                                        }),
+                                    TextEntry::make('products')
+                                        ->label('')
+                                        ->formatStateUsing(function ($record) {
+                                            $auth_type = Auth::user()->user_type;
+                                            if ($auth_type === 'business') {
+                                                return $record->products->business_type_product_price->first()->price;
+                                            } elseif ($auth_type === 'customer') {
+                                                return $record->products->customer_type_product_price->first()->price;
+                                            }
+                                        })
+                                ])
+                                ->columns(1),
+                        ])->from('md')
+                    ])
+                    ->grid(2)
+            ])
+            ->columns(1);
     }
 
     public static function table(Table $table): Table
@@ -46,24 +72,34 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('oderabel_type')
+                    ->label('Order Type')
+                    ->formatStateUsing(fn($record) => match ($record->oderabel_type) {
+                        'App\Models\RecurringOrderSchedule' => 'Recurring Order',
+                        default => $record->RecurringOrderSchedule,
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('oderabel_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_status')
-                    ->numeric()
+                    ->formatStateUsing(function ($record) {
+                        if ($record->payment_status != null) {
+                            return PaymentStatus::from($record->payment_status)->getLabel();
+                        }
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_date')
                     ->dateTime()
+                    ->formatStateUsing(function ($record) {
+                        return $record->payment_date->format('d-m-Y');
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_type')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                    ->formatStateUsing(function ($record) {
+                        if ($record->payment_type != null) {
+                            return PaymentType::from($record->payment_type)->getLabel();
+                        }
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -78,13 +114,13 @@ class PaymentResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                Tables\Actions\ViewAction::make(),
             ]);
+        // ->bulkActions([
+        //     Tables\Actions\BulkActionGroup::make([
+        //         Tables\Actions\DeleteBulkAction::make(),
+        //     ]),
+        // ]);
     }
 
     public static function getRelations(): array

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->dateTime('payment_date')->nullable();
             $table->dateTime('payment_complate_date')->nullable();
             $table->tinyInteger('payment_type')->nullable();
+            $table->tinyInteger('payment_via')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });

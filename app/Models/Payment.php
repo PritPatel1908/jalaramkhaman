@@ -25,6 +25,7 @@ class Payment extends Model
         'payment_date' => 'datetime',
         'payment_complate_date' => 'datetime',
         'payment_type' => 'int',
+        'payment_via' => 'int',
         'user_id' => 'int',
     ];
 
@@ -36,6 +37,7 @@ class Payment extends Model
         'payment_date',
         'payment_complate_date',
         'payment_type',
+        'payment_via',
         'user_id',
     ];
 
