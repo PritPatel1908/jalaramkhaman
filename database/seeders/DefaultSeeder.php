@@ -22,47 +22,70 @@ class DefaultSeeder extends Seeder
         ]);
 
         $product1 = Product::create([
-            'name' => 'Gujarati Fafda',
-            'code' => 'GujaratiFafda',
+            'name' => 'Khaman',
+            'code' => 'KH',
             'category_id' => $category1->id,
-            'description' => 'Gujarati Fafda',
+            'description' => 'Gujrati Khaman Dhokla is a popular traditional snack in Gujarat. It is made from besan and sooji. It is a steamed cake and has a mild tangy and sweet taste. It is soft and spongy and is usually served with green chutney and sweet chutney.',
             'stock' => 1,
             'product_image_path' => ''
         ]);
         $product1->business_type_product_price()->create([
-            'price' => '239',
+            'price' => '70',
             'product_id' => $product1->id,
-            'per' => '200',
-            'unit_in' => UnitIn::GRAM
+            'per' => '1',
+            'unit_in' => UnitIn::KG
         ]);
 
         $product1->customer_type_product_price()->create([
-            'price' => '249',
+            'price' => '80',
             'product_id' => $product1->id,
-            'per' => '200',
-            'unit_in' => UnitIn::GRAM
+            'per' => '1',
+            'unit_in' => UnitIn::KG
         ]);
 
         $product2 = Product::create([
-            'name' => 'Jalebi',
-            'code' => 'Jalebi',
-            'category_id' => 1,
-            'description' => 'Jalebi',
+            'name' => 'Without Fry Samosa',
+            'code' => 'WFS',
+            'category_id' => $category1->id,
+            'description' => 'Without Fry Samosa is a popular traditional snack in Gujarat. It is made from besan and sooji. It is a steamed cake and has a mild tangy and sweet taste. It is soft and spongy and is usually served with green chutney and sweet chutney.',
             'stock' => 1,
             'product_image_path' => ''
         ]);
 
         $product2->business_type_product_price()->create([
-            'price' => '149',
+            'price' => '55',
             'product_id' => $product2->id,
-            'per' => '200',
-            'unit_in' => UnitIn::GRAM
+            'per' => '1',
+            'unit_in' => UnitIn::NO
         ]);
 
         $product2->customer_type_product_price()->create([
-            'price' => '159',
+            'price' => '60',
             'product_id' => $product2->id,
-            'per' => '200',
+            'per' => '1',
+            'unit_in' => UnitIn::NO
+        ]);
+
+        $product3 = Product::create([
+            'name' => 'Cheese Samosa',
+            'code' => 'CS',
+            'category_id' => $category1->id,
+            'description' => 'Cheese Samosa is a popular traditional snack in Gujarat. It is made from besan and sooji. It is a steamed cake and has a mild tangy and sweet taste. It is soft and spongy and is usually served with green chutney and sweet chutney.',
+            'stock' => 1,
+            'product_image_path' => ''
+        ]);
+
+        $product3->business_type_product_price()->create([
+            'price' => '180',
+            'product_id' => $product2->id,
+            'per' => '400',
+            'unit_in' => UnitIn::GRAM
+        ]);
+
+        $product3->customer_type_product_price()->create([
+            'price' => '200',
+            'product_id' => $product2->id,
+            'per' => '400',
             'unit_in' => UnitIn::GRAM
         ]);
     }

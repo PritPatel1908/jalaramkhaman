@@ -32,7 +32,7 @@ class DailyScheduleCheck extends Command
     {
         $users = User::where('user_type', 'business')->get();
         if (count($users) > 0) {
-            Log::error('Start checking daily, weekly, monthly base recurring order at ' . Carbon::today()->format('Y-m-d'));
+            Log::info('Start checking daily, weekly, monthly base recurring order at ' . Carbon::today()->format('Y-m-d'));
             foreach ($users as $user) {
                 $recurringOrders = RecurringOrder::where('user_id', $user->id)->get();
                 if (count($recurringOrders) > 0) {
@@ -40,7 +40,7 @@ class DailyScheduleCheck extends Command
                         if ($recurringOrder->next_created_date->format('Y-m-d') == Carbon::today()->format('Y-m-d')) {
                             GenerateOrder::dispatch($recurringOrder);
                         } else {
-                            Log::error($user->name . ' #' . $recurringOrder->id . ' is not match to daily, monthly, yearly recurring schedule at ' . Carbon::today()->format('Y-m-d'));
+                            Log::info($user->name . ' #' . $recurringOrder->id . ' is not match to daily, monthly, yearly recurring schedule at ' . Carbon::today()->format('Y-m-d'));
                         }
                     }
                 } else {

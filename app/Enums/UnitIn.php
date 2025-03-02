@@ -11,6 +11,7 @@ enum UnitIn: int implements HasLabel
     case KG = 2;
     case ML = 3;
     case LTR = 4;
+    case NO = 5;
 
     public function getLabel(): ?string
     {
