@@ -173,7 +173,7 @@
             <p>Thank you,<br> The Team</p>
         </div>
         <div class="email-footer">
-            © {{Carbon::today->format('Y')}} Your Company. All rights reserved.
+            © {{$recurring_order_schedule->created_date->format('Y')}} Your Company. All rights reserved.
         </div>
     </div>
 
