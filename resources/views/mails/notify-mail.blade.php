@@ -152,6 +152,8 @@
                                     ML
                                 @elseif($detail->products->business_type_product_price->first()->unit_in == '4')
                                     LTR
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '5')
+                                    No
                                 @endif
                             @endif
                         </td>

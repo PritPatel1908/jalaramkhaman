@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\PaymentStatus;
+use App\Enums\PaymentType;
 use App\Filament\Admin\Resources\PaymentResource\Pages;
 use App\Filament\Admin\Resources\PaymentResource\RelationManagers;
 use App\Models\Payment;
@@ -17,7 +19,9 @@ class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+
+    protected static ?int $navigationSort = 40;
 
     public static function form(Form $form): Form
     {
@@ -44,24 +48,34 @@ class PaymentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('oderabel_type')
+                    ->label('Order Type')
+                    ->formatStateUsing(fn($record) => match ($record->oderabel_type) {
+                        'App\Models\RecurringOrderSchedule' => 'Recurring Order',
+                        default => $record->RecurringOrderSchedule,
+                    })
                     ->searchable(),
-                Tables\Columns\TextColumn::make('oderabel_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('total_amount')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_status')
-                    ->numeric()
+                    ->formatStateUsing(function ($record) {
+                        if ($record->payment_status != null) {
+                            return PaymentStatus::from($record->payment_status)->getLabel();
+                        }
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_date')
                     ->dateTime()
+                    ->formatStateUsing(function ($record) {
+                        return $record->payment_date->format('d-m-Y');
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('payment_type')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
-                    ->numeric()
+                    ->formatStateUsing(function ($record) {
+                        if ($record->payment_type != null) {
+                            return PaymentType::from($record->payment_type)->getLabel();
+                        }
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
