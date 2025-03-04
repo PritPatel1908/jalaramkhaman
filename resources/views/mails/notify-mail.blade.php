@@ -105,7 +105,7 @@
 
             <h3>Order Information</h3>
             <p><strong>Order ID:</strong> #123456</p>
-            <p><strong>Order Date:</strong> {{ $recurring_order_schedule->created_date->format('d-M-Y') }}</p>
+            <p><strong>Order Date:</strong> {{ $order->created_date->format('d-M-Y') }}</p>
 
             <h3>Order Details</h3>
             <table class="order-table">
@@ -114,68 +114,127 @@
                     <th>Quantity</th>
                     <th>Price</th>
                 </tr>
-                @foreach ($recurring_order_schedule->recurring_order_detail_schedules as $detail)
+                @if (get_class($order) === \App\Models\RecurringOrder::class)
+                    @foreach ($order->recurring_order_detail_schedules as $detail)
                     <tr>
                         <td>{{ $detail->products->name }}</td>
                         <td>
                             {{ $detail->qty }}
                             @if ($detail->unit_in == '1')
-                                GRAM
+                            GRAM
                             @elseif($detail->unit_in == '2')
-                                KG
+                            KG
                             @elseif($detail->unit_in == '3')
-                                ML
+                            ML
                             @elseif($detail->unit_in == '4')
-                                LTR
+                            LTR
+                            @elseif($detail->unit_in == '5')
+                            NO
                             @endif
                         </td>
                         <td>₹@if ($user->user_type == 'business')
                                 {{ $detail->products->business_type_product_price->first()->price }}
                                 per {{ $detail->products->business_type_product_price->first()->per }}
                                 @if ($detail->products->business_type_product_price->first()->unit_in == '1')
-                                    GRAM
+                                GRAM
                                 @elseif($detail->products->business_type_product_price->first()->unit_in == '2')
-                                    KG
+                                KG
                                 @elseif($detail->products->business_type_product_price->first()->unit_in == '3')
-                                    ML
+                                ML
                                 @elseif($detail->products->business_type_product_price->first()->unit_in == '4')
-                                    LTR
+                                LTR
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '5')
+                                NO
                                 @endif
                             @elseif($user->user_type == 'customer')
                                 {{ $detail->products->customer_type_product_price->first()->price }}
-                                per {{ $detail->products->business_type_product_price->first()->per }}
-                                @if ($detail->products->business_type_product_price->first()->unit_in == '1')
-                                    GRAM
-                                @elseif($detail->products->business_type_product_price->first()->unit_in == '2')
-                                    KG
-                                @elseif($detail->products->business_type_product_price->first()->unit_in == '3')
-                                    ML
-                                @elseif($detail->products->business_type_product_price->first()->unit_in == '4')
-                                    LTR
-                                @elseif($detail->products->business_type_product_price->first()->unit_in == '5')
-                                    No
+                                per {{ $detail->products->customer_type_product_price->first()->per }}
+                                @if ($detail->products->customer_type_product_price->first()->unit_in == '1')
+                                GRAM
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '2')
+                                KG
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '3')
+                                ML
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '4')
+                                LTR
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '5')
+                                No
                                 @endif
                             @endif
                         </td>
                     </tr>
-                @endforeach
+                    @endforeach
+                @else
+                    @foreach ($order->order_details as $detail)
+                    <tr>
+                        <td>{{ $detail->products->name }}</td>
+                        <td>
+                            {{ $detail->qty }}
+                            @if ($detail->unit_in == '1')
+                            GRAM
+                            @elseif($detail->unit_in == '2')
+                            KG
+                            @elseif($detail->unit_in == '3')
+                            ML
+                            @elseif($detail->unit_in == '4')
+                            LTR
+                            @elseif($detail->unit_in == '5')
+                            NO
+                            @endif
+                        </td>
+                        <td>₹@if ($user->user_type == 'business')
+                                {{ $detail->products->business_type_product_price->first()->price }}
+                                per {{ $detail->products->business_type_product_price->first()->per }}
+                                @if ($detail->products->business_type_product_price->first()->unit_in == '1')
+                                GRAM
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '2')
+                                KG
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '3')
+                                ML
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '4')
+                                LTR
+                                @elseif($detail->products->business_type_product_price->first()->unit_in == '5')
+                                NO
+                                @endif
+                            @elseif($user->user_type == 'customer')
+                                {{ $detail->products->customer_type_product_price->first()->price }}
+                                per {{ $detail->products->customer_type_product_price->first()->per }}
+                                @if ($detail->products->customer_type_product_price->first()->unit_in == '1')
+                                GRAM
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '2')
+                                KG
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '3')
+                                ML
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '4')
+                                LTR
+                                @elseif($detail->products->customer_type_product_price->first()->unit_in == '5')
+                                No
+                                @endif
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                @endif
                 <tr>
                     <td colspan="2"><strong>Total</strong></td>
                     <td>
                         <strong>
-                            ₹{{ \App\Models\Payment::where('oderabel_type', $recurring_order_schedule::class)->where('oderabel_id', $recurring_order_schedule->id)->first()->total_amount }}
+                            ₹{{ \App\Models\Payment::where('oderabel_type', $order::class)->where('oderabel_id', $order->id)->first()->total_amount }}
                         </strong>
                     </td>
                 </tr>
             </table>
 
             <p>Click the button below to view your order:</p>
-            <p><a href="#" class="btn">View Order</a></p>
-
+            @if (get_class($order) === \App\Models\RecurringOrder::class)
+                <p><a href="https://sienna-emu-662169.hostingersite.com/main/recurring-orders" class="btn">View Order</a></p>
+            @else
+                <p><a href="https://sienna-emu-662169.hostingersite.com/main/orders" class="btn">View Order</a></p>
+            @endif
             <p>Thank you,<br> The Team</p>
         </div>
         <div class="email-footer">
-            © {{$recurring_order_schedule->created_date->format('Y')}} Your Company. All rights reserved.
+            © {{$order->created_date->format('Y')}} Your Company. All rights reserved.
         </div>
     </div>
 

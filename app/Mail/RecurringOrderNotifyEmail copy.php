@@ -43,7 +43,7 @@ class RecurringOrderNotifyEmail extends Mailable
     {
         return new Content(
             view: 'mails.notify-mail',
-            with: ['recurring_order_schedule' => $this->recurringOrderSchedule, 'user' => $this->user]
+            with: ['order' => $this->recurringOrderSchedule, 'user' => $this->user]
         );
     }
 

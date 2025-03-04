@@ -28,7 +28,7 @@ class RecurringOrderScheduleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
 
-    protected static ?int $navigationSort = 30;
+    protected static ?int $navigationSort = 40;
 
     // public static function form(Form $form): Form
     // {
