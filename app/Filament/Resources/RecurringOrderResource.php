@@ -3,9 +3,10 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use App\Enums\UnitIn;
 use Filament\Tables;
 use App\Enums\Status;
+use App\Enums\UnitIn;
+use Filament\Forms\Get;
 use Filament\Forms\Form;
 use App\Enums\OrderPeriod;
 use Filament\Tables\Table;
@@ -13,6 +14,7 @@ use App\Enums\PaymentCycle;
 use App\Jobs\GenerateOrder;
 use App\Models\RecurringOrder;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\ActionGroup;
@@ -60,6 +62,14 @@ class RecurringOrderResource extends Resource
                                     ->schema([
                                         Forms\Components\Select::make('product_id')
                                             ->relationship('products', 'name')
+                                            // ->getOptionLabelFromRecordUsing(fn(User $record): string => ($record->name ?? "") . " (" . ($record->user_code ?? "") . ")")
+                                            ->getOptionLabelFromRecordUsing(function ($record) {
+                                                if (Auth::user()->user_type == 'business') {
+                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel()) . ")";
+                                                } elseif (Auth::user()->user_type == 'customer') {
+                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel()) . ")";
+                                                }
+                                            })
                                             ->native(false)
                                             ->preload()
                                             ->required(),
@@ -71,7 +81,8 @@ class RecurringOrderResource extends Resource
                                             ->options(UnitIn::class)
                                             ->native(false)
                                             ->preload()
-                                            ->required(),
+                                            ->required()
+                                            ->live(),
                                     ])
                                     ->columns(3)
                             ]),

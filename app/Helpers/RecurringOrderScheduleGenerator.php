@@ -7,11 +7,11 @@ use App\Enums\Status;
 use App\Enums\UnitIn;
 use App\Models\Payment;
 use App\Enums\PaymentStatus;
-use App\Mail\RecurringOrderNotifyEmail;
 use App\Models\RecurringOrder;
-use App\Models\RecurringOrderSchedule;
-use App\Models\RecurringOrderDetailSchedule;
 use Illuminate\Support\Facades\Mail;
+use App\Models\RecurringOrderSchedule;
+use App\Mail\RecurringOrderNotifyEmail;
+use App\Models\RecurringOrderDetailSchedule;
 
 class RecurringOrderScheduleGenerator
 {
@@ -78,6 +78,7 @@ class RecurringOrderScheduleGenerator
             'oderabel_type' => $recurring_order_schedule::class,
             'oderabel_id' => $recurring_order_schedule->id,
             'total_amount' => $this->total,
+            'pending_payment_amount' => $this->total,
             'payment_status' => PaymentStatus::Pending,
             'payment_date' => Carbon::today()->format('Y-m-d'),
             'user_id' => $this->recurringOrder->user_id

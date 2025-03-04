@@ -81,6 +81,9 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('total_amount')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('pending_payment_amount')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('payment_status')
                     ->formatStateUsing(function ($record) {
                         if ($record->payment_status != null) {
@@ -137,5 +140,12 @@ class PaymentResource extends Resource
             'create' => Pages\CreatePayment::route('/create'),
             'edit' => Pages\EditPayment::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+        $query->where("user_id", auth()->user()->id);
+        return $query;
     }
 }

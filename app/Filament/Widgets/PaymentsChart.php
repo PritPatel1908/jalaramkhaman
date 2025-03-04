@@ -49,10 +49,10 @@ class PaymentsChart extends ChartWidget
         $filteredData = $this->getEloquentQuery();
         if ($filteredData) {
             $user_type = Auth::user()->user_type;
-            if ($user_type == 'business') {
+            if ($user_type == 'business' || $user_type == 'customer') {
                 $pending_payment = $filteredData->where('user_id', Auth::user()->id)->where('payment_status', PaymentStatus::Pending)->sum('total_amount');
                 $success_payment = $filteredData->where('user_id', Auth::user()->id)->where('payment_status', PaymentStatus::Completed)->sum('total_amount');
-            } elseif ($user_type == 'customer') {
+            } elseif ($user_type == 'admin') {
                 $pending_payment = $filteredData->where('payment_status', PaymentStatus::Pending)->sum('total_amount');
                 $success_payment = $filteredData->where('payment_status', PaymentStatus::Completed)->sum('total_amount');
             }

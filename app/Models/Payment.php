@@ -21,6 +21,8 @@ class Payment extends Model
     protected $casts = [
         'oderabel_id' => 'int',
         'total_amount' => 'float',
+        'complate_payment_amount' => 'float',
+        'pending_payment_amount' => 'float',
         'payment_status' => 'int',
         'payment_date' => 'datetime',
         'payment_complate_date' => 'datetime',
@@ -36,6 +38,8 @@ class Payment extends Model
         'payment_status',
         'payment_date',
         'payment_complate_date',
+        'pending_payment_amount',
+        'complate_payment_amount',
         'payment_type',
         'payment_via',
         'user_id',
