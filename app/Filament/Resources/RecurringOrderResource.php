@@ -120,11 +120,11 @@ class RecurringOrderResource extends Resource
                                 ->label('Order Status')
                                 ->options(function (RecurringOrder $recurring_order) {
                                     if ($recurring_order->status === 1) {
-                                        return [Status::End->value => Status::End->name];
+                                        return [Status::Pause->value => Status::Pause->name, Status::End->value => Status::End->name];
                                     } else if ($recurring_order->status === 2) {
                                         return [Status::Start->value => Status::Start->name];
                                     } else if ($recurring_order->status === 4) {
-                                        return [Status::Start->value => Status::Start->name];
+                                        return [Status::Start->value => Status::Start->name, Status::End->value => Status::End->name];
                                     }
                                 })
                                 ->native(false)
@@ -134,7 +134,7 @@ class RecurringOrderResource extends Resource
                         ->action(function (array $data, RecurringOrder $recurring_order): void {
                             $recurring_order->status = $data['status'];
                             $recurring_order->save();
-                            if (Status::from($data['status'])->name === 'Start') {
+                            if (Status::from($data['status'])->name === 'Start' && $recurring_order->last_created_date == null && $recurring_order->next_created_date == null) {
                                 GenerateOrder::dispatch($recurring_order);
                             }
                         }),

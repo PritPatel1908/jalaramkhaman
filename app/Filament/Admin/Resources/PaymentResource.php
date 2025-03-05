@@ -54,6 +54,7 @@ class PaymentResource extends Resource
                     ->label('Order Type')
                     ->formatStateUsing(fn($record) => match ($record->oderabel_type) {
                         'App\Models\RecurringOrderSchedule' => 'Recurring Order',
+                        'App\Models\Order' => 'Order',
                         default => $record->RecurringOrderSchedule,
                     })
                     ->searchable(),

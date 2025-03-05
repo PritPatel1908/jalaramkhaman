@@ -25,66 +25,77 @@ class RecurringOrderScheduleGenerator
 
     public function generateRecurringOrderSchedule(): void
     {
-        $recurring_order_schedule = RecurringOrderSchedule::create([
-            'order_period' => $this->recurringOrder->order_period,
-            'created_date' => Carbon::today()->format('Y-m-d'),
-            'payment_cycle' => $this->recurringOrder->payment_cycle,
-            'user_id' => $this->recurringOrder->user_id,
-            'status' => 5
-        ]);
-
-        foreach ($this->recurringOrder->recurring_order_details as $recurring_order_detail) {
-            RecurringOrderDetailSchedule::create([
-                'qty' => $recurring_order_detail->qty,
-                'unit_in' => $recurring_order_detail->unit_in,
-                'product_id' => $recurring_order_detail->product_id,
-                'order_schedule_id' => $recurring_order_schedule->id,
-            ]);
-        }
-
-        $this->recurringOrder->last_created_date = $recurring_order_schedule->created_date;
-        if ($this->recurringOrder->order_period === 1) {
-            $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addDay();
-        } elseif ($this->recurringOrder->order_period === 1) {
-            $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addWeek();
+        if ($this->recurringOrder->status == 7) {
+            if ($this->recurringOrder->order_period === 1) {
+                $this->recurringOrder->next_created_date = $this->recurringOrder->next_created_date->addDay();
+            } elseif ($this->recurringOrder->order_period === 1) {
+                $this->recurringOrder->next_created_date = $this->recurringOrder->next_created_date->addWeek();
+            } else {
+                $this->recurringOrder->next_created_date = $this->recurringOrder->next_created_date->addMonth();
+            }
+            $this->recurringOrder->save();
         } else {
-            $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addMonth();
-        }
-        $this->recurringOrder->save();
+            $recurring_order_schedule = RecurringOrderSchedule::create([
+                'order_period' => $this->recurringOrder->order_period,
+                'created_date' => Carbon::today()->format('Y-m-d'),
+                'payment_cycle' => $this->recurringOrder->payment_cycle,
+                'user_id' => $this->recurringOrder->user_id,
+                'status' => 5
+            ]);
 
-        // $recurring_order_detail_schedules = RecurringOrderDetailSchedule::where('order_schedule_id', $recurring_order_schedule->id)->get();
-        foreach ($recurring_order_schedule->recurring_order_detail_schedules as $schedule) {
-            if ($this->recurringOrder->user->user_type === 'business') {
-                $product_type = $schedule->products->business_type_product_price->first();
+            foreach ($this->recurringOrder->recurring_order_details as $recurring_order_detail) {
+                RecurringOrderDetailSchedule::create([
+                    'qty' => $recurring_order_detail->qty,
+                    'unit_in' => $recurring_order_detail->unit_in,
+                    'product_id' => $recurring_order_detail->product_id,
+                    'order_schedule_id' => $recurring_order_schedule->id,
+                ]);
+            }
 
-                $base_price = $product_type->price;
-                $per_unit_qty = $product_type->per;
-                $base_unit = UnitIn::from($product_type->unit_in)->getLabel();
+            $this->recurringOrder->last_created_date = $recurring_order_schedule->created_date;
+            if ($this->recurringOrder->order_period === 1) {
+                $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addDay();
+            } elseif ($this->recurringOrder->order_period === 1) {
+                $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addWeek();
+            } else {
+                $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addMonth();
+            }
+            $this->recurringOrder->save();
 
-                $purchase_qty = $schedule->qty;
-                $purchase_unit = UnitIn::from($schedule->unit_in)->getLabel();
+            // $recurring_order_detail_schedules = RecurringOrderDetailSchedule::where('order_schedule_id', $recurring_order_schedule->id)->get();
+            foreach ($recurring_order_schedule->recurring_order_detail_schedules as $schedule) {
+                if ($this->recurringOrder->user->user_type === 'business') {
+                    $product_type = $schedule->products->business_type_product_price->first();
 
-                $converted_price = $this->convertPrice($base_price, $per_unit_qty, $base_unit, $purchase_unit);
+                    $base_price = $product_type->price;
+                    $per_unit_qty = $product_type->per;
+                    $base_unit = UnitIn::from($product_type->unit_in)->getLabel();
 
-                if ($converted_price !== null) {
-                    $this->total += $converted_price * $purchase_qty;
-                } else {
-                    $this->total += $base_price * $purchase_qty;
+                    $purchase_qty = $schedule->qty;
+                    $purchase_unit = UnitIn::from($schedule->unit_in)->getLabel();
+
+                    $converted_price = $this->convertPrice($base_price, $per_unit_qty, $base_unit, $purchase_unit);
+
+                    if ($converted_price !== null) {
+                        $this->total += $converted_price * $purchase_qty;
+                    } else {
+                        $this->total += $base_price * $purchase_qty;
+                    }
                 }
             }
+
+            Payment::create([
+                'oderabel_type' => $recurring_order_schedule::class,
+                'oderabel_id' => $recurring_order_schedule->id,
+                'total_amount' => $this->total,
+                'pending_payment_amount' => $this->total,
+                'payment_status' => PaymentStatus::Pending,
+                'payment_date' => Carbon::today()->format('Y-m-d'),
+                'user_id' => $this->recurringOrder->user_id
+            ]);
+
+            Mail::to($this->recurringOrder->user->email)->send(new RecurringOrderNotifyEmail($recurring_order_schedule, $this->recurringOrder->user));
         }
-
-        Payment::create([
-            'oderabel_type' => $recurring_order_schedule::class,
-            'oderabel_id' => $recurring_order_schedule->id,
-            'total_amount' => $this->total,
-            'pending_payment_amount' => $this->total,
-            'payment_status' => PaymentStatus::Pending,
-            'payment_date' => Carbon::today()->format('Y-m-d'),
-            'user_id' => $this->recurringOrder->user_id
-        ]);
-
-        Mail::to($this->recurringOrder->user->email)->send(new RecurringOrderNotifyEmail($recurring_order_schedule, $this->recurringOrder->user));
     }
 
     public function convertPrice($price, $perUnitQty, $perUnit, $toUnit)
