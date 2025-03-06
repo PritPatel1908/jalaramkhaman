@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RecurringOrderResource\Pages;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
+use App\Models\RecurringOrderDetail;
+use Filament\Forms\Components\ViewField;
 
 class RecurringOrderResource extends Resource
 {
@@ -54,37 +56,43 @@ class RecurringOrderResource extends Resource
                                     ->required(),
                             ])
                             ->columns(2),
-                        Section::make()
+                        // Section::make()
+                        //     ->schema([
+                        //         Repeater::make('recurring_order_details')
+                        //             ->relationship('recurring_order_details')
+                        //             ->label('Products Details')
+                        //             ->schema([
+                        //                 Forms\Components\Select::make('product_id')
+                        //                     ->relationship('products', 'name')
+                        //                     // ->getOptionLabelFromRecordUsing(fn(User $record): string => ($record->name ?? "") . " (" . ($record->user_code ?? "") . ")")
+                        //                     ->getOptionLabelFromRecordUsing(function ($record) {
+                        //                         if (Auth::user()->user_type == 'business') {
+                        //                             return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel()) . ")";
+                        //                         } elseif (Auth::user()->user_type == 'customer') {
+                        //                             return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel()) . ")";
+                        //                         }
+                        //                     })
+                        //                     ->native(false)
+                        //                     ->preload()
+                        //                     ->required(),
+                        //                 Forms\Components\TextInput::make('qty')
+                        //                     ->label('Quantity')
+                        //                     ->required(),
+                        //                 Forms\Components\Select::make('unit_in')
+                        //                     // ->default(OrderPeriod::Daily)
+                        //                     ->options(UnitIn::class)
+                        //                     ->native(false)
+                        //                     ->preload()
+                        //                     ->required()
+                        //                     ->live(),
+                        //             ])
+                        //             ->columns(3)
+                        //     ]),
+                        // Alpine.js Product Selection UI
+                        Section::make('Products Selection')
                             ->schema([
-                                Repeater::make('recurring_order_details')
-                                    ->relationship('recurring_order_details')
-                                    ->label('Products Details')
-                                    ->schema([
-                                        Forms\Components\Select::make('product_id')
-                                            ->relationship('products', 'name')
-                                            // ->getOptionLabelFromRecordUsing(fn(User $record): string => ($record->name ?? "") . " (" . ($record->user_code ?? "") . ")")
-                                            ->getOptionLabelFromRecordUsing(function ($record) {
-                                                if (Auth::user()->user_type == 'business') {
-                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel()) . ")";
-                                                } elseif (Auth::user()->user_type == 'customer') {
-                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel()) . ")";
-                                                }
-                                            })
-                                            ->native(false)
-                                            ->preload()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('qty')
-                                            ->label('Quantity')
-                                            ->required(),
-                                        Forms\Components\Select::make('unit_in')
-                                            // ->default(OrderPeriod::Daily)
-                                            ->options(UnitIn::class)
-                                            ->native(false)
-                                            ->preload()
-                                            ->required()
-                                            ->live(),
-                                    ])
-                                    ->columns(3)
+                                ViewField::make('productSelection')
+                                    ->view('filament.forms.product-selection')
                             ]),
                     ])
             ]);
@@ -154,5 +162,22 @@ class RecurringOrderResource extends Resource
             'create' => Pages\CreateRecurringOrder::route('/create'),
             'edit' => Pages\EditRecurringOrder::route('/{record}/edit'),
         ];
+    }
+
+    // Handle Order Submission
+    public static function createRecurringOrder(Request $request)
+    {
+        $cart = json_decode($request->input('cart_data'), true);
+
+        foreach ($cart as $item) {
+            RecurringOrderDetail::create([
+                'product_id' => $item['id'],
+                'qty' => $item['qty'],
+                'unit_in' => $item['unit'],
+                'recurring_order_id' => auth()->id(),
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Order placed successfully!');
     }
 }
