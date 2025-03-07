@@ -135,4 +135,11 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+        $query->where("user_id", auth()->user()->id);
+        return $query;
+    }
 }

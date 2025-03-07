@@ -30,6 +30,11 @@ class RecurringOrderScheduleResource extends Resource
 
     protected static ?int $navigationSort = 40;
 
+    public static function canAccess(): bool
+    {
+        return Auth::user()->user_type == 'business';
+    }
+
     // public static function form(Form $form): Form
     // {
     //     return $form
@@ -123,5 +128,12 @@ class RecurringOrderScheduleResource extends Resource
             'create' => Pages\CreateRecurringOrderSchedule::route('/create'),
             'edit' => Pages\EditRecurringOrderSchedule::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = static::getModel()::query();
+        $query->where("user_id", auth()->user()->id);
+        return $query;
     }
 }
