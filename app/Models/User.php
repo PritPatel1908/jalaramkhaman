@@ -67,6 +67,8 @@ class User extends Authenticatable implements FilamentUser, CanLoginDirectly
         'dob',
         'gender',
         'is_activate',
+        'order_period',
+        'payment_cycle',
     ];
 
     /**
@@ -92,6 +94,8 @@ class User extends Authenticatable implements FilamentUser, CanLoginDirectly
             'is_locked' => 'bool',
             'dob' => 'datetime',
             'is_activate' => 'bool',
+            'order_period' => 'int',
+            'payment_cycle' => 'int',
         ];
     }
 }

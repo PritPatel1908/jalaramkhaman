@@ -23,6 +23,8 @@ return new class extends Migration
             $table->date('dob')->nullable();
             $table->string('gender')->default('male')->nullable();
             $table->boolean('is_activate')->default(false);
+            $table->tinyInteger('order_period')->nullable();
+            $table->tinyInteger('payment_cycle')->nullable();
         });
     }
 

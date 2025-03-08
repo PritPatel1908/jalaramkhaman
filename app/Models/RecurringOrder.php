@@ -19,18 +19,14 @@ class RecurringOrder extends Model
      */
 
     protected $casts = [
-        'order_period' => 'int',
-        'payment_cycle' => 'int',
         'last_created_date' => 'datetime',
         'next_created_date' => 'datetime',
         'user_id' => 'int',
     ];
 
     protected $fillable = [
-        'order_period',
         'last_created_date',
         'next_created_date',
-        'payment_cycle',
         'user_id',
         'status',
     ];

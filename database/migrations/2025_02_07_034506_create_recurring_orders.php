@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('recurring_orders', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('order_period')->nullable();
             $table->dateTime('last_created_date')->nullable();
             $table->dateTime('next_created_date')->nullable();
-            $table->tinyInteger('payment_cycle')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->tinyInteger('status')->default(4);
             $table->timestamps();
