@@ -145,7 +145,8 @@ class RecurringOrderResource extends Resource
                             if (Status::from($data['status'])->name === 'Start' && $recurring_order->last_created_date == null && $recurring_order->next_created_date == null) {
                                 GenerateOrder::dispatch($recurring_order);
                             }
-                        }),
+                        })
+                        ->hidden(fn($record) => Status::from($record->status)->name === 'End'),
                 ])
             ])
             ->bulkActions([
