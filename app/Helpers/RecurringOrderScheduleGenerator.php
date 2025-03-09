@@ -26,9 +26,9 @@ class RecurringOrderScheduleGenerator
     public function generateRecurringOrderSchedule(): void
     {
         if ($this->recurringOrder->status == 7) {
-            if ($this->recurringOrder->order_period === 1) {
+            if ($this->recurringOrder->user->order_period === 1) {
                 $this->recurringOrder->next_created_date = $this->recurringOrder->next_created_date->addDay();
-            } elseif ($this->recurringOrder->order_period === 1) {
+            } elseif ($this->recurringOrder->user->order_period === 1) {
                 $this->recurringOrder->next_created_date = $this->recurringOrder->next_created_date->addWeek();
             } else {
                 $this->recurringOrder->next_created_date = $this->recurringOrder->next_created_date->addMonth();
@@ -36,9 +36,9 @@ class RecurringOrderScheduleGenerator
             $this->recurringOrder->save();
         } else {
             $recurring_order_schedule = RecurringOrderSchedule::create([
-                'order_period' => $this->recurringOrder->order_period,
+                'order_period' => $this->recurringOrder->user->order_period,
                 'created_date' => Carbon::today()->format('Y-m-d'),
-                'payment_cycle' => $this->recurringOrder->payment_cycle,
+                'payment_cycle' => $this->recurringOrder->user->payment_cycle,
                 'user_id' => $this->recurringOrder->user_id,
                 'status' => 5
             ]);
@@ -53,9 +53,9 @@ class RecurringOrderScheduleGenerator
             }
 
             $this->recurringOrder->last_created_date = $recurring_order_schedule->created_date;
-            if ($this->recurringOrder->order_period === 1) {
+            if ($this->recurringOrder->user->order_period === 1) {
                 $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addDay();
-            } elseif ($this->recurringOrder->order_period === 1) {
+            } elseif ($this->recurringOrder->user->order_period === 1) {
                 $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addWeek();
             } else {
                 $this->recurringOrder->next_created_date = $recurring_order_schedule->created_date->addMonth();

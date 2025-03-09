@@ -45,22 +45,22 @@ class RecurringOrderResource extends Resource
             ->schema([
                 Section::make()
                     ->schema([
-                        Section::make('Recurring Order Detail')
-                            ->schema([
-                                Forms\Components\Select::make('order_period')
-                                    // ->default(OrderPeriod::Daily)
-                                    ->options(OrderPeriod::class)
-                                    ->native(false)
-                                    ->preload()
-                                    ->required(),
-                                Forms\Components\Select::make('payment_cycle')
-                                    // ->default(PaymentCycle::Daily)
-                                    ->options(PaymentCycle::class)
-                                    ->native(false)
-                                    ->preload()
-                                    ->required(),
-                            ])
-                            ->columns(2),
+                        // Section::make('Recurring Order Detail')
+                        //     ->schema([
+                        //         Forms\Components\Select::make('order_period')
+                        //             // ->default(OrderPeriod::Daily)
+                        //             ->options(OrderPeriod::class)
+                        //             ->native(false)
+                        //             ->preload()
+                        //             ->required(),
+                        //         Forms\Components\Select::make('payment_cycle')
+                        //             // ->default(PaymentCycle::Daily)
+                        //             ->options(PaymentCycle::class)
+                        //             ->native(false)
+                        //             ->preload()
+                        //             ->required(),
+                        //     ])
+                        //     ->columns(2),
                         Section::make()
                             ->schema([
                                 Repeater::make('recurring_order_details')
@@ -101,10 +101,10 @@ class RecurringOrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('order_period')
-                    ->formatStateUsing(fn($record) => OrderPeriod::from($record->order_period)->getLabel()),
-                Tables\Columns\TextColumn::make('payment_cycle')
-                    ->formatStateUsing(fn($record) => PaymentCycle::from($record->payment_cycle)->getLabel()),
+                Tables\Columns\TextColumn::make('user.order_period')
+                    ->formatStateUsing(fn($record) => OrderPeriod::from($record->user->order_period)->getLabel()),
+                Tables\Columns\TextColumn::make('user.payment_cycle')
+                    ->formatStateUsing(fn($record) => PaymentCycle::from($record->user->payment_cycle)->getLabel()),
                 Tables\Columns\TextColumn::make('last_created_date')
                     ->dateTime()
                     ->sortable(),
@@ -119,7 +119,8 @@ class RecurringOrderResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\EditAction::make()
+                        ->hidden(fn($record) => Status::from($record->status)->name === 'End'),
                     Tables\Actions\Action::make('status')
                         // ->icon('heroicon-o-key')
                         ->form([

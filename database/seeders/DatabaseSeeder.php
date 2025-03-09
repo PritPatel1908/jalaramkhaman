@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\OrderPeriod;
+use App\Enums\PaymentCycle;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -28,6 +30,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
+            'fname' => 'Jalaram',
+            'lname' => 'Khaman',
+            'name' => 'JalaramKhaman',
+            'email' => 'jalaramhhaman@gmail.com',
+            'password' => 'jalaramkhaman@1234',
+            'user_type' => 'admin',
+            'is_locked' => false,
+            'gender' => 'male',
+            'is_activate' => true,
+        ]);
+
+        User::factory()->create([
             'fname' => 'prit',
             'lname' => 'patel',
             'name' => 'prit patel',
@@ -37,6 +51,8 @@ class DatabaseSeeder extends Seeder
             'is_locked' => false,
             'gender' => 'male',
             'is_activate' => true,
+            'order_period' => OrderPeriod::Daily,
+            'payment_cycle' => PaymentCycle::Daily
         ]);
 
         User::factory()->create([
@@ -49,6 +65,8 @@ class DatabaseSeeder extends Seeder
             'is_locked' => false,
             'gender' => 'male',
             'is_activate' => true,
+            'order_period' => OrderPeriod::Daily,
+            'payment_cycle' => PaymentCycle::Daily
         ]);
 
         $this->call([

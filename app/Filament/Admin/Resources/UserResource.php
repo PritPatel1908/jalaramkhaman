@@ -2,6 +2,8 @@
 
 namespace App\Filament\Admin\Resources;
 
+use App\Enums\OrderPeriod;
+use App\Enums\PaymentCycle;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use App\Models\User;
@@ -43,30 +45,69 @@ class UserResource extends Resource
                 Section::make()
                     ->schema([
                         Forms\Components\TextInput::make('number')
-                            ->maxLength(255),
+                            ->required()
+                            ->minLength(10)
+                            ->maxLength(10),
                         Forms\Components\TextInput::make('email')
                             ->email()
                             ->required()
                             ->maxLength(50),
                         Forms\Components\TextInput::make('password')
                             ->password()
+                            ->revealable()
                             ->required()
                             ->maxLength(255),
                     ])
                     ->columns(3),
                 Section::make()
-                    ->schema([])
-                    ->columns(3),
-                Forms\Components\TextInput::make('user_type'),
-                Forms\Components\Toggle::make('is_locked'),
-                Forms\Components\TextInput::make('profile_pic')
-                    ->maxLength(255),
-                Forms\Components\DatePicker::make('dob'),
-                Forms\Components\TextInput::make('gender')
-                    ->maxLength(255)
-                    ->default('male'),
-                Forms\Components\Toggle::make('is_activate')
-                    ->required(),
+                    ->schema([
+                        Forms\Components\Select::make('user_type')
+                            ->label('User Type')
+                            ->searchable()
+                            ->options([
+                                'business' => 'business',
+                                'customer' => 'customer'
+                            ])
+                            ->preload()
+                            ->native(false)
+                            ->required(),
+                        Forms\Components\Select::make('gender')
+                            ->label('Gender')
+                            ->searchable()
+                            ->options([
+                                'male' => 'male',
+                                'female' => 'female',
+                                'other' => 'other'
+                            ])
+                            ->preload()
+                            ->native(false),
+                        Forms\Components\Select::make('order_period')
+                            ->label('Order Period')
+                            ->searchable()
+                            ->options(OrderPeriod::class)
+                            ->preload()
+                            ->native(false)
+                            ->required(),
+                        Forms\Components\Select::make('payment_cycle')
+                            ->label('Payment Cycle')
+                            ->searchable()
+                            ->options(PaymentCycle::class)
+                            ->preload()
+                            ->native(false)
+                            ->required(),
+                    ])
+                    ->columns(4),
+                Section::make()
+                    ->schema([
+                        Forms\Components\DatePicker::make('dob'),
+                        Forms\Components\Toggle::make('is_locked')
+                            ->required()
+                            ->inline(false),
+                        Forms\Components\Toggle::make('is_activate')
+                            ->required()
+                            ->inline(false),
+                    ])
+                    ->columns(3)
             ]);
     }
 
@@ -100,8 +141,8 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('user_type'),
                 Tables\Columns\IconColumn::make('is_locked')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('profile_pic')
-                    ->searchable(),
+                // Tables\Columns\TextColumn::make('profile_pic')
+                //     ->searchable(),
                 Tables\Columns\TextColumn::make('dob')
                     ->date()
                     ->sortable(),
