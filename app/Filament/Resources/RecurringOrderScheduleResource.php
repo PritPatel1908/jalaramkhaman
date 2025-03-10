@@ -70,14 +70,15 @@ class RecurringOrderScheduleResource extends Resource
                                         }),
                                     TextEntry::make('products')
                                         ->label('')
-                                        ->formatStateUsing(function ($record) {
-                                            $auth_type = Auth::user()->user_type;
-                                            if ($auth_type === 'business') {
-                                                return $record->products->business_type_product_price->first()->price;
-                                            } elseif ($auth_type === 'customer') {
-                                                return $record->products->customer_type_product_price->first()->price;
+                                        ->formatStateUsing(
+                                            function ($record) {
+                                                if (Auth::user()->user_type == 'business') {
+                                                    return "₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel());
+                                                } elseif (Auth::user()->user_type == 'customer') {
+                                                    return "₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel());
+                                                }
                                             }
-                                        })
+                                        )
                                 ])
                                 ->columns(1),
                         ])->from('md')

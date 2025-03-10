@@ -114,7 +114,7 @@
                     <th>Quantity</th>
                     <th>Price</th>
                 </tr>
-                @if (get_class($order) === \App\Models\RecurringOrder::class)
+                @if (get_class($order) === \App\Models\RecurringOrderSchedule::class)
                     @foreach ($order->recurring_order_detail_schedules as $detail)
                     <tr>
                         <td>{{ $detail->products->name }}</td>
