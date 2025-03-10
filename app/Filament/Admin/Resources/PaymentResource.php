@@ -13,6 +13,7 @@ use App\Enums\PaymentType;
 use Filament\Tables\Table;
 use App\Enums\PaymentStatus;
 use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\PaymentResource\Pages;
@@ -61,6 +62,12 @@ class PaymentResource extends Resource
                 Tables\Columns\TextColumn::make('total_amount')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('complate_payment_amount')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('pending_payment_amount')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('payment_status')
                     ->formatStateUsing(function ($record) {
                         if ($record->payment_status != null) {
@@ -98,9 +105,11 @@ class PaymentResource extends Resource
                     ->label('Edit Payment')
                     ->icon('heroicon-m-pencil-square')
                     ->form([
-                        Forms\Components\TextInput::make('total_amount')
-                            ->label('Payment Amount')
-                            ->readOnly(),
+                        // Forms\Components\TextInput::make('total_amount')
+                        //     ->label('Payment Amount')
+                        //     ->readOnly(),
+                        Forms\Components\TextInput::make('complate_payment_amount')
+                            ->label('Paid Payment Amount'),
                         Forms\Components\Select::make('payment_type')
                             ->label('Payment Type')
                             ->options(PaymentType::class)
@@ -136,7 +145,9 @@ class PaymentResource extends Resource
                         $payment->payment_type = $data['payment_type'];
                         $payment->payment_via = $data['payment_via'];
                         $payment->payment_status = $data['payment_status'];
+                        $payment->complate_payment_amount = $data['complate_payment_amount'];
                         $payment->payment_complate_date = Carbon::now();
+                        $payment->pending_payment_amount = $payment->total_amount - $payment->complate_payment_amount;
                         $payment->save();
                     }),
             ])
