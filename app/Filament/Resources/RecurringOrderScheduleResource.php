@@ -73,9 +73,9 @@ class RecurringOrderScheduleResource extends Resource
                                         ->formatStateUsing(
                                             function ($record) {
                                                 if (Auth::user()->user_type == 'business') {
-                                                    return "₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel());
+                                                    return "₹" . ($record->products->business_type_product_price->first()->price) . '/' . ($record->products->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->products->business_type_product_price->first()->unit_in)->getLabel());
                                                 } elseif (Auth::user()->user_type == 'customer') {
-                                                    return "₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel());
+                                                    return "₹" . ($record->products->customer_type_product_price->first()->price) . '/' . ($record->products->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->products->customer_type_product_price->first()->unit_in)->getLabel());
                                                 }
                                             }
                                         )
