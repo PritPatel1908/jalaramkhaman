@@ -13,8 +13,25 @@ enum UnitIn: int implements HasLabel
     case LTR = 4;
     case NO = 5;
 
-    public function getLabel(): ?string
+    public function getLabel(): string
     {
-        return $this->name;
+        return match ($this) {
+            self::GRAM => 'Gram',
+            self::KG => 'Kilogram',
+            self::ML => 'Milliliter',
+            self::LTR => 'Liter',
+            self::NO => 'No Unit',
+        };
+    }
+
+    public static function asSelectArray(): array
+    {
+        return [
+            self::GRAM->value => self::GRAM->getLabel(),
+            self::KG->value => self::KG->getLabel(),
+            self::ML->value => self::ML->getLabel(),
+            self::LTR->value => self::LTR->getLabel(),
+            self::NO->value => self::NO->getLabel(),
+        ];
     }
 }

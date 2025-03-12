@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Filament\Support\Facades\FilamentAsset;
+use Filament\Forms\Components\Field;
+use App\Forms\Components\ProductSelector;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +22,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Field::macro('productSelector', function (string $name): ProductSelector {
+            return ProductSelector::make($name);
+        });
     }
 }

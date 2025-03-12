@@ -25,6 +25,12 @@ use App\Filament\Resources\RecurringOrderResource\RelationManagers;
 use App\Filament\Resources\RecurringOrderResource\RelationManagers\RecurringOrderDetailRelationManager;
 use App\Models\RecurringOrderDetail;
 use Filament\Forms\Components\ViewField;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Actions;
+use Filament\Support\Enums\ActionSize;
+use Illuminate\Support\HtmlString;
+use App\Forms\Components\ProductSelector;
 
 class RecurringOrderResource extends Resource
 {
@@ -43,16 +49,13 @@ class RecurringOrderResource extends Resource
     {
         return $form
             ->schema([
-                Section::make()
+                Section::make('Product Selection')
+                    ->description('Select products for your recurring order')
                     ->schema([
-                        Section::make('Product Selection')
-                            ->description('Select products for your recurring order')
-                            ->schema([
-                                ViewField::make('product_selector')
-                                    ->view('filament.forms.components.product-selector')
-                                    ->dehydrated(true) // Ensure the field is included in form submission
-                            ])
-                    ])
+                        ProductSelector::make('product_details')
+                            ->label('Select Products')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 
@@ -81,7 +84,6 @@ class RecurringOrderResource extends Resource
                     Tables\Actions\EditAction::make()
                         ->hidden(fn($record) => Status::from($record->status)->name === 'End'),
                     Tables\Actions\Action::make('status')
-                        // ->icon('heroicon-o-key')
                         ->form([
                             Forms\Components\Select::make('status')
                                 ->label('Order Status')
