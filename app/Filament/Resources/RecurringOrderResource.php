@@ -45,54 +45,13 @@ class RecurringOrderResource extends Resource
             ->schema([
                 Section::make()
                     ->schema([
-                        // Section::make('Recurring Order Detail')
-                        //     ->schema([
-                        //         Forms\Components\Select::make('order_period')
-                        //             // ->default(OrderPeriod::Daily)
-                        //             ->options(OrderPeriod::class)
-                        //             ->native(false)
-                        //             ->preload()
-                        //             ->required(),
-                        //         Forms\Components\Select::make('payment_cycle')
-                        //             // ->default(PaymentCycle::Daily)
-                        //             ->options(PaymentCycle::class)
-                        //             ->native(false)
-                        //             ->preload()
-                        //             ->required(),
-                        //     ])
-                        //     ->columns(2),
-                        Section::make()
+                        Section::make('Product Selection')
+                            ->description('Select products for your recurring order')
                             ->schema([
-                                Repeater::make('recurring_order_details')
-                                    ->relationship('recurring_order_details')
-                                    ->label('Products Details')
-                                    ->schema([
-                                        Forms\Components\Select::make('product_id')
-                                            ->relationship('products', 'name')
-                                            // ->getOptionLabelFromRecordUsing(fn(User $record): string => ($record->name ?? "") . " (" . ($record->user_code ?? "") . ")")
-                                            ->getOptionLabelFromRecordUsing(function ($record) {
-                                                if (Auth::user()->user_type == 'business') {
-                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel()) . ")";
-                                                } elseif (Auth::user()->user_type == 'customer') {
-                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel()) . ")";
-                                                }
-                                            })
-                                            ->native(false)
-                                            ->preload()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('qty')
-                                            ->label('Quantity')
-                                            ->required(),
-                                        Forms\Components\Select::make('unit_in')
-                                            // ->default(OrderPeriod::Daily)
-                                            ->options(UnitIn::class)
-                                            ->native(false)
-                                            ->preload()
-                                            ->required()
-                                            ->live(),
-                                    ])
-                                    ->columns(3)
-                            ]),
+                                ViewField::make('product_selector')
+                                    ->view('filament.forms.components.product-selector')
+                                    ->dehydrated(true) // Ensure the field is included in form submission
+                            ])
                     ])
             ]);
     }
