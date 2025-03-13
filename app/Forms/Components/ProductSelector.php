@@ -26,7 +26,7 @@ class ProductSelector extends Field
                 $formattedProducts[] = [
                     'id' => $product->id,
                     'name' => $product->name,
-                    'image_url' => $product->image_url ?? '/images/default-product.jpg',
+                    'image_url' => asset('storage/' . $product->product_image_path) ?? '/images/default-product.jpg',
                     'price' => $price->price ?? 0,
                     'per' => $price->per ?? 1,
                     'unit_in' => $price->unit_in ?? 1,
