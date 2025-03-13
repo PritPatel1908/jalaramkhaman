@@ -20,7 +20,7 @@ enum UnitIn: int implements HasLabel
             self::KG => 'Kilogram',
             self::ML => 'Milliliter',
             self::LTR => 'Liter',
-            self::NO => 'No Unit',
+            self::NO => 'No',
         };
     }
 
