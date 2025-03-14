@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderDetailRelationManager;
+use App\Forms\Components\ProductSelector;
 
 class OrderResource extends Resource
 {
@@ -36,41 +37,13 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
-                Section::make()
+                Section::make('')
+                    ->description('Select products for your order')
                     ->schema([
-                        Section::make()
-                            ->schema([
-                                Repeater::make('order_details')
-                                    ->relationship('order_details')
-                                    ->label('Products Details')
-                                    ->schema([
-                                        Forms\Components\Select::make('product_id')
-                                            ->relationship('products', 'name')
-                                            // ->getOptionLabelFromRecordUsing(fn(User $record): string => ($record->name ?? "") . " (" . ($record->user_code ?? "") . ")")
-                                            ->getOptionLabelFromRecordUsing(function ($record) {
-                                                if (Auth::user()->user_type == 'business') {
-                                                    return ($record->name) . " (₹" . ($record->business_type_product_price->first()->price) . '/' . ($record->business_type_product_price->first()->per) . ' ' . (UnitIn::from($record->business_type_product_price->first()->unit_in)->getLabel()) . ")";
-                                                } elseif (Auth::user()->user_type == 'customer') {
-                                                    return ($record->name) . " (₹" . ($record->customer_type_product_price->first()->price) . '/' . ($record->customer_type_product_price->first()->per) . ' ' . (UnitIn::from($record->customer_type_product_price->first()->unit_in)->getLabel()) . ")";
-                                                }
-                                            })
-                                            ->native(false)
-                                            ->preload()
-                                            ->required(),
-                                        Forms\Components\TextInput::make('qty')
-                                            ->label('Quantity')
-                                            ->required(),
-                                        Forms\Components\Select::make('unit_in')
-                                            // ->default(OrderPeriod::Daily)
-                                            ->options(UnitIn::class)
-                                            ->native(false)
-                                            ->preload()
-                                            ->required()
-                                            ->live(),
-                                    ])
-                                    ->columns(3)
-                            ]),
-                    ])
+                        ProductSelector::make('product_details')
+                            ->label('Select Products')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 

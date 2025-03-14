@@ -49,7 +49,7 @@ class RecurringOrderResource extends Resource
     {
         return $form
             ->schema([
-                Section::make('Product Selection')
+                Section::make('')
                     ->description('Select products for your recurring order')
                     ->schema([
                         ProductSelector::make('product_details')
