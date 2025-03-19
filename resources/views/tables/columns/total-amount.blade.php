@@ -1,7 +1,11 @@
 <div>
-    @if ($getRecord()->paymentabel_type && $getRecord()->paymentabel_id)
-        "Have Paymrnt Details"
-    @else
-        "Not Have Payment Details"
-    @endif
+    @php
+        $record = $getRecord();
+        if ($record->paymentabel_type && $record->paymentabel_id) {
+            $payment = $record->paymentabel_type::find($record->paymentabel_id);
+            echo $payment->total_amount;
+        } else {
+            echo '-';
+        }
+    @endphp
 </div>

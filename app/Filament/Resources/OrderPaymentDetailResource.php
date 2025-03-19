@@ -3,22 +3,22 @@
 namespace App\Filament\Resources;
 
 use Filament\Tables;
-use App\Models\OrderPaymentDetail;
 use App\Enums\PaymentType;
 use Filament\Tables\Table;
 use App\Enums\PaymentStatus;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use App\Models\OrderPaymentDetail;
+use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\OrderPaymentDetailResource\Pages;
 use Filament\Infolists\Components\RepeatableEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\OrderPaymentDetailResource\Pages;
 use App\Filament\Resources\PaymentResource\RelationManagers;
-use Filament\Tables\Columns\ViewColumn;
 
 class OrderPaymentDetailResource extends Resource
 {
-    protected static ?string $model = OrderPaymentDetailResource::class;
+    protected static ?string $model = OrderPaymentDetail::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
@@ -76,11 +76,11 @@ class OrderPaymentDetailResource extends Resource
                     ->label('Order Type')
                     ->formatStateUsing(fn($record) => match ($record->oderabel_type) {
                         'App\Models\RecurringOrder' => 'Recurring Order',
-                        'App\Models\Order' => 'Recurring Order',
+                        'App\Models\Order' => 'Order',
                         default => $record->RecurringOrderSchedule,
                     })
                     ->searchable(),
-                ViewColumn::make('total_amount')->view('filament.tables.columns.total-amount'),
+                ViewColumn::make('total_amount')->view('tables.columns.total-amount'),
                 Tables\Columns\TextColumn::make('pending_payment_amount')
                     ->numeric()
                     ->sortable(),

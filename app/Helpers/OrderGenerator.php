@@ -5,12 +5,13 @@ namespace App\Helpers;
 use Carbon\Carbon;
 use App\Enums\Status;
 use App\Enums\UnitIn;
-use App\Models\Payment;
-use App\Enums\PaymentStatus;
 use App\Models\Order;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\OrderNotifyEmail;
+use App\Models\Payment;
 use App\Models\OrderDetail;
+use App\Enums\PaymentStatus;
+use App\Mail\OrderNotifyEmail;
+use App\Models\OrderPaymentDetail;
+use Illuminate\Support\Facades\Mail;
 
 class OrderGenerator
 {
@@ -62,13 +63,21 @@ class OrderGenerator
             }
         }
 
-        Payment::create([
+        $payment = Payment::create([
             'oderabel_type' => $this->order::class,
             'oderabel_id' => $this->order->id,
             'total_amount' => $this->total,
             'pending_payment_amount' => $this->total,
             'payment_status' => PaymentStatus::Pending,
             'payment_date' => Carbon::today()->format('Y-m-d'),
+            'user_id' => $this->order->user_id
+        ]);
+
+        OrderPaymentDetail::create([
+            'oderabel_type' => $this->order::class,
+            'oderabel_id' => $this->order->id,
+            'paymentabel_type' => $payment::class,
+            'paymentabel_id' => $payment->id,
             'user_id' => $this->order->user_id
         ]);
 
