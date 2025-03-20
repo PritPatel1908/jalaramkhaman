@@ -11,6 +11,7 @@ use App\Models\RecurringOrder;
 use Illuminate\Support\Facades\Mail;
 use App\Models\RecurringOrderSchedule;
 use App\Mail\RecurringOrderNotifyEmail;
+use App\Models\OrderPaymentDetail;
 use App\Models\RecurringOrderDetailSchedule;
 
 class RecurringOrderScheduleGenerator
@@ -84,13 +85,21 @@ class RecurringOrderScheduleGenerator
                 }
             }
 
-            Payment::create([
+            $payment = Payment::create([
                 'oderabel_type' => $recurring_order_schedule::class,
                 'oderabel_id' => $recurring_order_schedule->id,
                 'total_amount' => $this->total,
                 'pending_payment_amount' => $this->total,
                 'payment_status' => PaymentStatus::Pending,
                 'payment_date' => Carbon::today()->format('Y-m-d'),
+                'user_id' => $this->recurringOrder->user_id
+            ]);
+
+            OrderPaymentDetail::create([
+                'oderabel_type' => $recurring_order_schedule::class,
+                'oderabel_id' => $recurring_order_schedule->id,
+                'paymentabel_type' => $payment::class,
+                'paymentabel_id' => $payment->id,
                 'user_id' => $this->recurringOrder->user_id
             ]);
 

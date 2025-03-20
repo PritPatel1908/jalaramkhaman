@@ -11,7 +11,7 @@ enum Status: int implements HasLabel
     case End = 2;
     case Deleted = 3;
     case Waiting = 4;
-    case Waiting_For_Dispatch = 5;
+    case Processing = 5;
     case Delivered = 6;
     case Pause = 7;
 

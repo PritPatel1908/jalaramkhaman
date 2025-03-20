@@ -15,6 +15,7 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderPaymentDetailResource\Pages;
 use App\Filament\Resources\PaymentResource\RelationManagers;
+use Illuminate\Database\Eloquent\Model;
 
 class OrderPaymentDetailResource extends Resource
 {
@@ -75,12 +76,13 @@ class OrderPaymentDetailResource extends Resource
                 Tables\Columns\TextColumn::make('oderabel_type')
                     ->label('Order Type')
                     ->formatStateUsing(fn($record) => match ($record->oderabel_type) {
-                        'App\Models\RecurringOrder' => 'Recurring Order',
+                        'App\Models\RecurringOrderSchedule' => 'Recurring Order',
                         'App\Models\Order' => 'Order',
                         default => $record->RecurringOrderSchedule,
                     })
                     ->searchable(),
                 ViewColumn::make('total_amount')->view('tables.columns.total-amount'),
+                ViewColumn::make('paid_amount')->view('tables.columns.paid-amount'),
                 Tables\Columns\TextColumn::make('pending_payment_amount')
                     ->numeric()
                     ->sortable(),
@@ -113,6 +115,12 @@ class OrderPaymentDetailResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->recordClasses(fn(Model $record) => match ($record->status) {
+                dd($record->status),
+                'total_amount' => 'opacity-30',
+                'paid_amount' => 'border-s-2 border-orange-600 dark:border-orange-300',
+                'published' => 'border-s-2 border-green-600 dark:border-green-300',
+            })
             ->filters([
                 //
             ])
