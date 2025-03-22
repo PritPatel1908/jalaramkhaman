@@ -15,6 +15,7 @@ use Filament\Infolists\Components\RepeatableEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderPaymentDetailResource\Pages;
 use App\Filament\Resources\PaymentResource\RelationManagers;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderPaymentDetailResource extends Resource
@@ -24,50 +25,6 @@ class OrderPaymentDetailResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-banknotes';
 
     protected static ?int $navigationSort = 50;
-
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                RepeatableEntry::make('')
-                    // ->relationship('leave_balance_details')
-                    ->schema([
-                        Split::make([
-                            Section::make()
-                                ->schema([
-                                    ImageEntry::make('products.product_image_path')
-                                        ->label('')
-                                        ->size(120)
-                                        ->circular()
-                                ])
-                                ->columns(1),
-                            Section::make()
-                                ->schema([
-                                    TextEntry::make('products.name')
-                                        ->label(''),
-                                    TextEntry::make('qty')
-                                        ->label('')
-                                        ->formatStateUsing(function ($record) {
-                                            return $record->qty . ' ' . UnitIn::from($record->unit_in)->getLabel();
-                                        }),
-                                    TextEntry::make('products')
-                                        ->label('')
-                                        ->formatStateUsing(function ($record) {
-                                            $auth_type = Auth::user()->user_type;
-                                            if ($auth_type === 'business') {
-                                                return $record->products->business_type_product_price->first()->price;
-                                            } elseif ($auth_type === 'customer') {
-                                                return $record->products->customer_type_product_price->first()->price;
-                                            }
-                                        })
-                                ])
-                                ->columns(1),
-                        ])->from('md')
-                    ])
-                    ->grid(2)
-            ])
-            ->columns(1);
-    }
 
     public static function table(Table $table): Table
     {
@@ -83,50 +40,28 @@ class OrderPaymentDetailResource extends Resource
                     ->searchable(),
                 ViewColumn::make('total_amount')->view('tables.columns.total-amount'),
                 ViewColumn::make('paid_amount')->view('tables.columns.paid-amount'),
-                Tables\Columns\TextColumn::make('pending_payment_amount')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('payment_status')
-                    ->formatStateUsing(function ($record) {
-                        if ($record->payment_status != null) {
-                            return PaymentStatus::from($record->payment_status)->getLabel();
-                        }
-                    })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('payment_date')
-                    ->dateTime()
-                    ->formatStateUsing(function ($record) {
-                        return $record->payment_date->format('d-m-Y');
-                    })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('payment_type')
-                    ->formatStateUsing(function ($record) {
-                        if ($record->payment_type != null) {
-                            return PaymentType::from($record->payment_type)->getLabel();
-                        }
-                    })
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->recordClasses(fn(Model $record) => match ($record->status) {
-                dd($record->status),
-                'total_amount' => 'opacity-30',
-                'paid_amount' => 'border-s-2 border-orange-600 dark:border-orange-300',
-                'published' => 'border-s-2 border-green-600 dark:border-green-300',
-            })
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
+                Tables\Actions\Action::make("details")
+                    ->label('Details')
+                    // ->hidden(fn() => !auth()->user()?->can('debug_attendance::log'))
+                    ->icon('heroicon-o-beaker')
+                    ->modalSubmitAction(false)
+                    ->modalContent(function (OrderPaymentDetail $record): View {
+                        return view(
+                            'filament.pages.actions.details',
+                            [
+                                'detail' => $record
+                            ],
+                        );
+                    })
             ]);
+        // ->actions([
+        //     Tables\Actions\ViewAction::make(),
+        // ]);
         // ->bulkActions([
         //     Tables\Actions\BulkActionGroup::make([
         //         Tables\Actions\DeleteBulkAction::make(),
