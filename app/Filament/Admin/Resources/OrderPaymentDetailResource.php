@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Admin\Resources;
 
 use Filament\Tables;
 use App\Enums\PaymentType;
@@ -13,7 +13,7 @@ use Filament\Tables\Columns\ViewColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Components\RepeatableEntry;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\OrderPaymentDetailResource\Pages;
+use App\Filament\Admin\Resources\OrderPaymentDetailResource\Pages;
 use App\Filament\Resources\PaymentResource\RelationManagers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
@@ -86,12 +86,5 @@ class OrderPaymentDetailResource extends Resource
             'view' => Pages\ViewOrderPaymentDetail::route('/{record}'),
             'edit' => Pages\EditOrderPaymentDetail::route('/{record}/edit'),
         ];
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        $query = static::getModel()::query();
-        $query->where("user_id", auth()->user()->id);
-        return $query;
     }
 }

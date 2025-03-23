@@ -4,7 +4,7 @@ namespace App\Tables\Columns;
 
 use Filament\Tables\Columns\Column;
 
-class TotalAmount extends Column
+class PaidAmount extends Column
 {
-    protected string $view = 'tables.columns.total-amount';
+    protected string $view = 'tables.columns.paid-amount';
 }
