@@ -29,6 +29,7 @@ class RecurringOrder extends Model
         'next_created_date',
         'user_id',
         'status',
+        'main_status',
     ];
 
     public function user()

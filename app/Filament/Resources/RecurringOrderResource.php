@@ -31,6 +31,7 @@ use Filament\Forms\Components\Actions;
 use Filament\Support\Enums\ActionSize;
 use Illuminate\Support\HtmlString;
 use App\Forms\Components\ProductSelector;
+use Filament\Notifications\Notification;
 
 class RecurringOrderResource extends Resource
 {
@@ -75,6 +76,16 @@ class RecurringOrderResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->formatStateUsing(fn($record) => Status::from($record->status)->getLabel()),
+                Tables\Columns\TextColumn::make('main_status')
+                    ->formatStateUsing(function ($record) {
+                        if ($record->main_status === 'waiting_for_approve') {
+                            return new HtmlString('<span class="text-yellow-500">Waiting for Approval</span>');
+                        } elseif ($record->main_status === 'waiting_for_approve') {
+                            return new HtmlString('<span class="text-green-500">Approved</span>');
+                        } else {
+                            return new HtmlString('<span class="text-red-500">Rejected</span>');
+                        }
+                    }),
             ])
             ->filters([
                 //
@@ -90,9 +101,7 @@ class RecurringOrderResource extends Resource
                                 ->options(function (RecurringOrder $recurring_order) {
                                     if ($recurring_order->status === 1) {
                                         return [Status::Pause->value => Status::Pause->name, Status::End->value => Status::End->name];
-                                    } else if ($recurring_order->status === 2) {
-                                        return [Status::Start->value => Status::Start->name];
-                                    } else if ($recurring_order->status === 4) {
+                                    } else if ($recurring_order->status === 7) {
                                         return [Status::Start->value => Status::Start->name, Status::End->value => Status::End->name];
                                     }
                                 })
@@ -103,9 +112,9 @@ class RecurringOrderResource extends Resource
                         ->action(function (array $data, RecurringOrder $recurring_order): void {
                             $recurring_order->status = $data['status'];
                             $recurring_order->save();
-                            if (Status::from($data['status'])->name === 'Start' && $recurring_order->last_created_date == null && $recurring_order->next_created_date == null) {
-                                GenerateOrder::dispatch($recurring_order);
-                            }
+                            // if (Status::from($data['status'])->name === 'Start' && $recurring_order->last_created_date == null && $recurring_order->next_created_date == null) {
+                            //     GenerateOrder::dispatch($recurring_order);
+                            // }
                         })
                         ->hidden(fn($record) => Status::from($record->status)->name === 'End'),
                 ])

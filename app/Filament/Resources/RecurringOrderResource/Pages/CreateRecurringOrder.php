@@ -5,6 +5,7 @@ namespace App\Filament\Resources\RecurringOrderResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\RecurringOrderResource;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -36,6 +37,13 @@ class CreateRecurringOrder extends CreateRecord
                 'unit_in' => $detail['unit_in'],
             ]);
         }
+
+        Notification::make()
+            ->title("Request Sent for Approval")
+            ->body("Request Sent for Approval.")
+            ->persistent()
+            ->success()
+            ->send();
 
         return $record;
     }

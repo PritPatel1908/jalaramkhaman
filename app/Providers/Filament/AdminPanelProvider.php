@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->brandName('Jalaram Khaman Admin')
-            ->topNavigation(true)
+            // ->topNavigation(true)
             // ->profile(isSimple: false)
             ->colors([
                 'primary' => Color::Amber,

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->dateTime('next_created_date')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             $table->tinyInteger('status')->default(4);
+            $table->string('main_status')->default("waiting_for_approve")->nullable();
             $table->timestamps();
         });
     }

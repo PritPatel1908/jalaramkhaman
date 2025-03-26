@@ -5,6 +5,7 @@ namespace App\Filament\Resources\RecurringOrderResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\RecurringOrderResource;
+use Filament\Notifications\Notification;
 
 class EditRecurringOrder extends EditRecord
 {
@@ -46,6 +47,10 @@ class EditRecurringOrder extends EditRecord
         $record = $this->getRecord();
         $productDetails = $this->data['product_details'] ?? [];
 
+        $record->status = '4';
+        $record->main_status = 'waiting_for_approve';
+        $record->save();
+
         // Delete existing details
         $record->recurring_order_details()->delete();
 
@@ -57,5 +62,12 @@ class EditRecurringOrder extends EditRecord
                 'unit_in' => $detail['unit_in'],
             ]);
         }
+
+        Notification::make()
+            ->title("Request Sent for Approval")
+            ->body("Request Sent for Approval.")
+            ->persistent()
+            ->success()
+            ->send();
     }
 }
