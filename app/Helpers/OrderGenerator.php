@@ -39,9 +39,11 @@ class OrderGenerator
                 $converted_price = $this->convertPrice($base_price, $per_unit_qty, $base_unit, $purchase_unit);
 
                 if ($converted_price !== null) {
-                    $this->total += $converted_price * $purchase_qty;
+                    $item_total = $converted_price * $purchase_qty;
+                    $this->total += $item_total;
                 } else {
-                    $this->total += $base_price * $purchase_qty;
+                    $item_total = $base_price * $purchase_qty;
+                    $this->total += $item_total;
                 }
             } else {
                 $product_type = $order_detail->products->customer_type_product_price->first();
@@ -84,22 +86,29 @@ class OrderGenerator
         Mail::to($this->order->user->email)->send(new OrderNotifyEmail($this->order, $this->order->user));
     }
 
-    public function convertPrice($price, $perUnitQty, $perUnit, $toUnit)
+    public function convertPrice($price, $perUnitQty, $baseUnit, $toUnit)
     {
-        $conversionRates = [
-            'GRAM' => ['KG' => 0.001, 'GRAM' => 1],
-            'KG' => ['GRAM' => 1000, 'KG' => 1],
-            'ML' => ['LTR' => 0.001, 'ML' => 1],
-            'LTR' => ['ML' => 1000, 'LTR' => 1],
-        ];
-
-        // Convert per unit to the base unit price
-        if (isset($conversionRates[$perUnit][$toUnit])) {
-            $unitConversionFactor = $conversionRates[$perUnit][$toUnit];
-            $pricePerGram = $price / $perUnitQty; // Price per 1 gram
-            return $pricePerGram * (1 / $unitConversionFactor);
+        // If units are the same, no conversion needed
+        if ($baseUnit === $toUnit) {
+            return $price / $perUnitQty;
         }
 
+        $conversionRates = [
+            'Gram' => ['Kilogram' => 0.001, 'Gram' => 1],
+            'Kilogram' => ['Gram' => 1000, 'Kilogram' => 1],
+            'Milliliter' => ['Liter' => 0.001, 'Milliliter' => 1],
+            'Liter' => ['Milliliter' => 1000, 'Liter' => 1],
+            'No' => ['No' => 1],
+        ];
+
+        // If conversion exists
+        if (isset($conversionRates[$baseUnit][$toUnit])) {
+            // Calculate price per base unit (e.g., price per 1 KG)
+            $pricePerBaseUnit = $price / $perUnitQty;
+
+            // Apply conversion factor to get price per target unit
+            return $pricePerBaseUnit * $conversionRates[$baseUnit][$toUnit];
+        }
         return null; // Conversion not found
     }
 }

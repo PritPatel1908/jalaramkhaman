@@ -2,22 +2,23 @@
 
 namespace App\Filament\Admin\Resources;
 
-use App\Enums\OrderPeriod;
-use App\Enums\PaymentCycle;
-use App\Enums\Status;
-use App\Filament\Admin\Resources\ApproveRequestResource\Pages;
-use App\Filament\Admin\Resources\UserResource\RelationManagers;
-use App\Models\RecurringOrder;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use App\Enums\Status;
+use Filament\Forms\Form;
+use App\Enums\OrderPeriod;
 use Filament\Tables\Table;
+use App\Enums\PaymentCycle;
+use App\Jobs\GenerateOrder;
+use App\Models\RecurringOrder;
+use Filament\Resources\Resource;
+use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\HtmlString;
+use App\Filament\Admin\Resources\ApproveRequestResource\Pages;
+use App\Filament\Admin\Resources\UserResource\RelationManagers;
 
 class ApproveRequestResource extends Resource
 {
@@ -58,13 +59,28 @@ class ApproveRequestResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->hidden(function ($record) {
-                        if ($record->id == 1) {
-                            return true;
+                Tables\Actions\Action::make('approve_reject')
+                    ->label('Approve/Reject')
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                "approved" => "Approved",
+                                "rejected" => "Rejected",
+                            ])
+                            ->native(false)
+                            ->preload()
+                            ->required(),
+                    ])
+                    ->action(function (array $data, RecurringOrder $recurring_order): void {
+                        $recurring_order->status = Status::Start->value;
+                        $recurring_order->main_status = $data['status'];
+                        $recurring_order->save();
+                        if ($recurring_order->main_status === 'approved' && $recurring_order->last_created_date == null && $recurring_order->next_created_date == null) {
+                            GenerateOrder::dispatch($recurring_order);
                         }
-                        return false;
-                    }),
+                    })
+                // ->hidden(fn($record) => Status::from($record->status)->name === 'End'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -84,9 +100,9 @@ class ApproveRequestResource extends Resource
     {
         return [
             'index' => Pages\ListApproveRequests::route('/'),
-            'create' => Pages\CreateApproveRequest::route('/create'),
-            'view' => Pages\ViewApproveRequest::route('/{record}'),
-            'edit' => Pages\EditApproveRequest::route('/{record}/edit'),
+            // 'create' => Pages\CreateApproveRequest::route('/create'),
+            // 'view' => Pages\ViewApproveRequest::route('/{record}'),
+            // 'edit' => Pages\EditApproveRequest::route('/{record}/edit'),
         ];
     }
 
@@ -94,6 +110,7 @@ class ApproveRequestResource extends Resource
     {
         $query = static::getModel()::query();
         $query->where("user_id", '!=', 1);
+        $query->where("main_status", 'waiting_for_approve');
         return $query;
     }
 }
