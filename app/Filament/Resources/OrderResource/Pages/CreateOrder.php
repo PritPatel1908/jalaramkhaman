@@ -18,8 +18,6 @@ class CreateOrder extends CreateRecord
     {
         $data['user_id'] = auth()->user()->id;
         $data['created_date'] = Carbon::now();
-        $data['status'] = Status::Waiting;
-
         return $data;
     }
 
@@ -44,10 +42,10 @@ class CreateOrder extends CreateRecord
         return $record;
     }
 
-    protected function afterCreate(): void
-    {
-        GenerateOrder::dispatch($this->record);
-    }
+    // protected function afterCreate(): void
+    // {
+    //     GenerateOrder::dispatch($this->record);
+    // }
 
     protected function getRedirectUrl(): string
     {

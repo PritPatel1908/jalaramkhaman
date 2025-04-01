@@ -24,6 +24,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderDetailRelationManager;
 use App\Forms\Components\ProductSelector;
+use Illuminate\Support\HtmlString;
 
 class OrderResource extends Resource
 {
@@ -59,6 +60,16 @@ class OrderResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->formatStateUsing(fn($record) => Status::from($record->status)->getLabel()),
+                Tables\Columns\TextColumn::make('main_status')
+                    ->formatStateUsing(function ($record) {
+                        if ($record->main_status === 'waiting_for_approve') {
+                            return new HtmlString('<span class="text-yellow-500">Waiting for Approval</span>');
+                        } elseif ($record->main_status === 'waiting_for_approve') {
+                            return new HtmlString('<span class="text-green-500">Approved</span>');
+                        } else {
+                            return new HtmlString('<span class="text-red-500">Rejected</span>');
+                        }
+                    }),
             ])
             ->filters([
                 //

@@ -80,7 +80,7 @@ class RecurringOrderResource extends Resource
                     ->formatStateUsing(function ($record) {
                         if ($record->main_status === 'waiting_for_approve') {
                             return new HtmlString('<span class="text-yellow-500">Waiting for Approval</span>');
-                        } elseif ($record->main_status === 'waiting_for_approve') {
+                        } elseif ($record->main_status === 'approved') {
                             return new HtmlString('<span class="text-green-500">Approved</span>');
                         } else {
                             return new HtmlString('<span class="text-red-500">Rejected</span>');

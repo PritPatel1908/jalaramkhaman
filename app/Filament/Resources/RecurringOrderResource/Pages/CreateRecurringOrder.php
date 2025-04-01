@@ -16,7 +16,6 @@ class CreateRecurringOrder extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] = auth()->user()->id;
-
         return $data;
     }
 
