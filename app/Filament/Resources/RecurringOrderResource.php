@@ -138,7 +138,9 @@ class RecurringOrderResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = static::getModel()::query();
-        $query->where("user_id", auth()->user()->id);
+        $query->where("user_id", auth()->user()->id)
+            ->orderByRaw("CASE WHEN main_status = 'waiting_for_approve' THEN 0 ELSE 1 END")
+            ->orderBy('last_created_date', 'desc');
         return $query;
     }
 }

@@ -21,6 +21,7 @@ class EditOrder extends EditRecord
         return [
             Actions\DeleteAction::make(),
             Actions\Action::make('approve_reject')
+                ->hidden(fn() => auth()->user()->user_type !== 'admin')
                 ->label('Approve/Reject')
                 ->form([
                     Select::make('main_status')

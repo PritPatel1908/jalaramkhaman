@@ -19,10 +19,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\ApproveRequestResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
+use App\Models\ApprovalRequest;
 
 class ApproveRequestResource extends Resource
 {
-    protected static ?string $model = RecurringOrder::class;
+    protected static ?string $model = ApprovalRequest::class;
 
     protected static ?string $label = 'Approve Requests';
 
@@ -72,12 +73,22 @@ class ApproveRequestResource extends Resource
                             ->preload()
                             ->required(),
                     ])
-                    ->action(function (array $data, RecurringOrder $recurring_order): void {
-                        $recurring_order->status = Status::Start->value;
-                        $recurring_order->main_status = $data['status'];
-                        $recurring_order->save();
-                        if ($recurring_order->main_status === 'approved' && $recurring_order->last_created_date == null && $recurring_order->next_created_date == null) {
-                            GenerateOrder::dispatch($recurring_order);
+                    ->action(function (array $data, ApprovalRequest $model): void {
+                        $originalModel = $model->getOriginalModel();
+
+                        if ($originalModel) {
+                            $originalModel->status = Status::Start->value;
+                            $originalModel->main_status = $data['status'];
+                            $originalModel->save();
+
+                            if (
+                                $model->request_type === 'recurring' &&
+                                $data['status'] === 'approved' &&
+                                $originalModel->last_created_date == null &&
+                                $originalModel->next_created_date == null
+                            ) {
+                                GenerateOrder::dispatch($originalModel);
+                            }
                         }
                     })
                 // ->hidden(fn($record) => Status::from($record->status)->name === 'End'),

@@ -5,6 +5,9 @@ namespace App\Filament\Resources\RecurringOrderResource\Pages;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use App\Filament\Resources\RecurringOrderResource;
+use App\Jobs\GenerateOrder;
+use App\Models\RecurringOrder;
+use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
 
 class EditRecurringOrder extends EditRecord
@@ -15,6 +18,43 @@ class EditRecurringOrder extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
+            Actions\Action::make('approve_reject')
+                ->hidden(fn() => auth()->user()->user_type !== 'admin')
+                ->label('Approve/Reject')
+                ->form([
+                    Select::make('main_status')
+                        ->label('Approve/Reject Order Status')
+                        ->options(function (RecurringOrder $order) {
+                            if ($order->main_status === 'waiting_for_approve') {
+                                return ['approved' => 'Approved', 'rejected' => 'Rejected'];
+                            } else if ($order->main_status === 'approved') {
+                                return ['rejected' => 'Rejected'];
+                            } else {
+                                return ['waiting_for_approve' => 'Waiting for Approval'];
+                            }
+                        })
+                        ->native(false)
+                        ->preload()
+                        ->required(),
+                ])
+                ->action(function (array $data, RecurringOrder $order): void {
+                    if ($data['main_status'] === 'approved') {
+                        $order->status = 5;
+                    } elseif ($data['main_status'] === 'rejected') {
+                        $order->status = 2;
+                    } else {
+                        $order->status = 4;
+                    }
+                    $order->main_status = $data['main_status'];
+                    $order->save();
+                    GenerateOrder::dispatch($order);
+                })
+                ->color('success')
+                ->icon('heroicon-o-check')
+                ->requiresConfirmation()
+                ->modalHeading('Approve/Reject Order')
+                ->modalSubheading('Are you sure you want to approve/reject this order?')
+                ->modalButton('Yes, Approve/Reject'),
         ];
     }
 
