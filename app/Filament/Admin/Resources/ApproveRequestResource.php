@@ -36,7 +36,7 @@ class ApproveRequestResource extends Resource
     {
         return $table
             ->columns([
-                ViewColumn::make('type')->view('filament.tables.columns.type'),
+                ViewColumn::make('type')->view('tables.columns.type'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.order_period')
