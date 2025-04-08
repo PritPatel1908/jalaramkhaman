@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Admin\Resources\ApproveRequestResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use App\Models\ApprovalRequest;
+use Filament\Tables\Columns\ViewColumn;
 
 class ApproveRequestResource extends Resource
 {
@@ -35,8 +36,7 @@ class ApproveRequestResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')
-                    ->searchable(),
+                ViewColumn::make('type')->view('filament.tables.columns.type'),
                 Tables\Columns\TextColumn::make('user.email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.order_period')
